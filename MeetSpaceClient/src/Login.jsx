@@ -7,11 +7,12 @@ function Login() {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     // Prevent the default submit and page reload
     e.preventDefault();
 
-    let data = qs.stringify({email, password});
+    const hashedPassword = await bcrypt.hash(password, 12);
+    let data = qs.stringify({email, hashedPassword});
 
     let config = {
       method: "post",
