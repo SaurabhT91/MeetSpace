@@ -1,14 +1,13 @@
 import React, { useState } from "react";
 import axios from "axios";
 import qs from "qs";
-import { redirect, useNavigate } from "react-router-dom";
- 
-
+import { useNavigate } from "react-router-dom";
 
 function Login() {
-  const baseurl = "http://localhost:8000/api/login";
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [errors, setErrors] = useState({});
+  const [networkError, setNetworkError] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -19,7 +18,7 @@ function Login() {
     let config = {
       method: "post",
       maxBodyLength: Infinity,
-      url: baseurl,
+      url: "http://localhost:8000/api/login",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
       },
@@ -30,14 +29,29 @@ function Login() {
       .request(config)
       .then((response) => {
         if (response.status === 200) {
-          const user = response.data;
-          // console.log(JSON.stringify(response.data));
-          navigate("/dashboard", { state: {user} });
+          const user = response.data.user;
+          navigate("/dashboard", { state: { user } });
         }
-        
       })
       .catch((error) => {
-        console.log(error);
+        if (error.response) {
+          const { status, data } = error.response;
+          if (status === 404) {
+            // User not found
+            setErrors({
+              error:
+                "User not found. Check your email for a registration invite.",
+            });
+          } else if (status === 401) {
+            // Incorrect password
+            setErrors({ error: "Invalid password." });
+          } else if (status === 422) {
+            // Validation error
+            setErrors(data.error);
+          }
+        } else {
+          setNetworkError(true);
+        }
       });
   };
 
@@ -49,7 +63,7 @@ function Login() {
       </div>
 
       <div>
-        <form method="get" onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit}>
           <div id="login-email">
             <input
               name="email"
@@ -58,6 +72,9 @@ function Login() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
+            <div>
+              {errors.email && <span className="error">{errors.email[0]}</span>}
+            </div>
           </div>
 
           <div id="login-password">
@@ -68,6 +85,19 @@ function Login() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
+            <div>
+              {errors.password && (
+                <span className="error">{errors.password[0]}</span>
+              )}
+            </div>
+          </div>
+          <div className="error">
+            {networkError && (
+              <span className="error">
+                Network error. Please try again later.
+              </span>
+            )}
+            {errors.error && <span className="error">{errors.error}</span>}
           </div>
           <button type="submit" id="login-btn">
             Login
