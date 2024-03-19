@@ -3,6 +3,8 @@
 use App\Http\Controllers\RegisteredUserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\InvitationController;
+use App\Http\Controllers\UserRegistrationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,6 +18,9 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::post('/login',[RegisteredUserController::class, 'login']);
+Route::post('/sendInvite', [InvitationController::class, 'sendInvite']);
+Route::post('/register', [UserRegistrationController::class, 'register']);
+
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();

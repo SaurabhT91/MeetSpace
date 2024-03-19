@@ -9,6 +9,8 @@ class Invite extends Model
 {
     use HasFactory;
 
+    protected $guarded = [];
+
     public function invite()
     {
         return $this->belongsTo(User::class, 'user_id');

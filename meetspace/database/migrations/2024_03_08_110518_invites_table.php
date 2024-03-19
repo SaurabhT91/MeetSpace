@@ -12,13 +12,14 @@ return new class extends Migration
     public function up(): void
     {
 
-        Schema::create('invites_table', function (Blueprint $table) {
+        Schema::create('invites', function (Blueprint $table) {
             $table->id();
             $table->foreignID('user_id')->constrained()->cascadeOnDelete();
             $table->string('senders_name');
             $table->string('receivers_name');
             $table->string('receivers_email');
-            $table->integer('invite_status');
+            $table->enum('invite_status', ['pending', 'accepted', 'declined'])->default('pending');
+            $table->string('token');
             $table->timestamps();
         });
     }

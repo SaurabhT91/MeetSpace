@@ -1,18 +1,20 @@
-import React, { useState, require } from "react";
+import React, { useState } from "react";
 import axios from "axios";
 import qs from "qs";
+import { redirect, useNavigate } from "react-router-dom";
+ 
+
 
 function Login() {
   const baseurl = "http://localhost:8000/api/login";
-  const [email, setEmail] = useState();
-  const [password, setPassword] = useState();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
-    // Prevent the default submit and page reload
     e.preventDefault();
 
-    const hashedPassword = await bcrypt.hash(password, 12);
-    let data = qs.stringify({email, hashedPassword});
+    let data = qs.stringify({ email, password });
 
     let config = {
       method: "post",
@@ -27,7 +29,12 @@ function Login() {
     axios
       .request(config)
       .then((response) => {
-        console.log(JSON.stringify(response.data));
+        if (response.status === 200) {
+          const user = response.data;
+          // console.log(JSON.stringify(response.data));
+          navigate("/dashboard", { state: {user} });
+        }
+        
       })
       .catch((error) => {
         console.log(error);
