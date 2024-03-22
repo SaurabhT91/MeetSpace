@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import qs from "qs";
 import { useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -9,6 +10,9 @@ function Login() {
   const [errors, setErrors] = useState({});
   const [networkError, setNetworkError] = useState(false);
   const navigate = useNavigate();
+  const user = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -30,7 +34,10 @@ function Login() {
       .then((response) => {
         if (response.status === 200) {
           const user = response.data.user;
-          navigate("/dashboard", { state: { user } });
+          dispatch({ type: "SET_USER", payload: user });
+          dispatch({ type: "SET_LOGGED_IN", payload: true }); 
+
+          navigate("/dashboard", { state: { user } }); // Navigation with user data (optional)
         }
       })
       .catch((error) => {

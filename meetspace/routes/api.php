@@ -20,6 +20,8 @@ use App\Http\Controllers\UserRegistrationController;
 Route::post('/login',[RegisteredUserController::class, 'login']);
 Route::post('/sendInvite', [InvitationController::class, 'sendInvite']);
 Route::post('/register', [UserRegistrationController::class, 'register']);
+Route::post('/getUsers/{user_type}', [RegisteredUserController::class, 'users']);
+
 
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {

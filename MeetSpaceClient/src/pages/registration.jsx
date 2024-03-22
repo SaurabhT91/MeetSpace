@@ -6,13 +6,13 @@ import { useParams } from "react-router-dom";
 function Registration() {
   const baseurl = "http://localhost:8000/api/register";
   const token = useParams().token;
-  console.log(token);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [contactNumber, setContactNumber] = useState("");
   const [address, setAddress] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState(""); // New state for confirm password
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [errors, setErrors] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -27,7 +27,6 @@ function Registration() {
       token,
     });
 
-
     let config = {
       method: "post",
       maxBodyLength: Infinity,
@@ -38,16 +37,26 @@ function Registration() {
       data: data,
     };
 
-    axios
-      .request(config)
-      .then((response) => {
-        if (response.status === 200) {
-          // Handle successful registration, e.g., redirect to a success page
+    try {
+      const response = await axios.request(config);
+      if (response.status === 200) {
+        // Handle successful registration, e.g., show a success message
+        alert("Registration successful!");
+      }
+    } catch (error) {
+      if (error.response) {
+        const { status, data } = error.response;
+        if (status === 401) {
+          setErrors({ serverError: "Unauthorized: Please log in to proceed." });
+        } else if (status === 422) {
+          setErrors(data.errors);
+        } else {
+          setErrors({ serverError: "Server error. Please try again later." });
         }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+      } else {
+        setErrors({ serverError: "Server error. Please try again later." });
+      }
+    }
   };
 
   return (
@@ -63,6 +72,11 @@ function Registration() {
             onChange={(e) => setName(e.target.value)}
             required
           />
+          <div>
+            {errors && errors.name && (
+              <span className="error">{errors.name[0]}</span>
+            )}
+          </div>
         </div>
         <div>
           <label htmlFor="email">Email:</label>
@@ -73,6 +87,11 @@ function Registration() {
             onChange={(e) => setEmail(e.target.value)}
             required
           />
+          <div>
+            {errors && errors.email && (
+              <span className="error">{errors.email[0]}</span>
+            )}
+          </div>
         </div>
         <div>
           <label htmlFor="contactNumber">Contact Number:</label>
@@ -83,6 +102,11 @@ function Registration() {
             onChange={(e) => setContactNumber(e.target.value)}
             required
           />
+          <div>
+            {errors && errors.contactNumber && (
+              <span className="error">{errors.contactNumber[0]}</span>
+            )}
+          </div>
         </div>
         <div>
           <label htmlFor="address">Address:</label>
@@ -93,6 +117,11 @@ function Registration() {
             onChange={(e) => setAddress(e.target.value)}
             required
           />
+          <div>
+            {errors && errors.address && (
+              <span className="error">{errors.address[0]}</span>
+            )}
+          </div>
         </div>
         <div>
           <label htmlFor="password">Password:</label>
@@ -103,6 +132,11 @@ function Registration() {
             onChange={(e) => setPassword(e.target.value)}
             required
           />
+          <div>
+            {errors && errors.password && (
+              <span className="error">{errors.password[0]}</span>
+            )}
+          </div>
         </div>
         <div>
           <label htmlFor="confirmPassword">Confirm Password:</label>
@@ -113,9 +147,19 @@ function Registration() {
             onChange={(e) => setConfirmPassword(e.target.value)}
             required
           />
+          <div>
+            {errors && errors.password_confirmation && (
+              <span className="error">{errors.password_confirmation[0]}</span>
+            )}
+          </div>
         </div>
         <button type="submit">Register</button>
       </form>
+      <div>
+        {errors && errors.serverError && (
+          <div className="error">{errors.serverError}</div>
+        )}
+      </div>
     </div>
   );
 }

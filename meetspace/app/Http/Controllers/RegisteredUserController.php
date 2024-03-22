@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 
 class RegisteredUserController extends Controller
 {
@@ -31,5 +32,27 @@ class RegisteredUserController extends Controller
         }
 
         return response()->json(['message' => 'Login successful', 'user' => $user], 200);
+    }
+    public function users(Request $request,$user_type){
+        
+        if($user_type == 'admin'){
+            $type_code=01;
+        }
+        elseif($user_type == 'owner') {
+            $type_code = 02;
+        }
+        elseif($user_type == 'user'){
+            $type_code = 03;
+        }
+        else{
+            return response()->json(['error' => 'Not a registered user type'], 404);
+        }
+        
+
+        if(Auth::check($request->user->id)){
+
+        }
+    
+
     }
 }
