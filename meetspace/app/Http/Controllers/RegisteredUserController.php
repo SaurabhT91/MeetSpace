@@ -33,26 +33,30 @@ class RegisteredUserController extends Controller
 
         return response()->json(['message' => 'Login successful', 'user' => $user], 200);
     }
-    public function users(Request $request,$user_type){
+    public function users(Request $request, $user_type){
         
-        if($user_type == 'admin'){
-            $type_code=01;
+        if($user_type == 'admins'){
+            $type_code= 'admin';
         }
-        elseif($user_type == 'owner') {
-            $type_code = 02;
+        elseif($user_type == 'owners') {
+            $type_code = 'owner';
         }
-        elseif($user_type == 'user'){
-            $type_code = 03;
+        elseif($user_type == 'consumer'){
+            $type_code = 'consumer';
         }
         else{
             return response()->json(['error' => 'Not a registered user type'], 404);
         }
         
-
-        if(Auth::check($request->user->id)){
-
+        // $data  = User::all();
+        if(User::where('id', $request->id)->first()){
+            $data = User::where('user_type', $type_code)->get();
         }
-    
+
+        return response()->json($data);
+        
+
+
 
     }
 }

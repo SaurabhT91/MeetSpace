@@ -42,6 +42,7 @@ function Registration() {
       if (response.status === 200) {
         // Handle successful registration, e.g., show a success message
         alert("Registration successful!");
+        window.location.href = "/";
       }
     } catch (error) {
       if (error.response) {

@@ -8,19 +8,7 @@ function Dashboard() {
 
 
   const [isLoggedIn, setIsLoggedIn] = useState(true);
-  const [isUser, setUser] = useState(false);
-  const [isOwner, setOwner] = useState(false);
-  const [isAdmin, setAdmin] = useState(false);
 
-  useEffect(() => {
-    if (user && user.user_type === "03") {
-      setUser(true);
-    } else if (user && user.user_type === "02") {
-      setOwner(true);
-    } else if (user && user.user_type === "01") {
-      setAdmin(true);
-    }
-  }, [user]);
 
   const handleLogout = () => {
     localStorage.clear();
@@ -32,12 +20,10 @@ function Dashboard() {
     <div>
       <h1>Dashboard</h1>
       <h3>{user && user.name}</h3>
-      {isAdmin && (
+      {user.user_type === "admin" && (
         <div>
           <div>
-            <Link to={{ pathname: "send-invite"}}>
-              Send Invite
-            </Link>
+            <Link to={{ pathname: "send-invite" }}>Send Invite</Link>
             <div id="invite">
               <Outlet />
             </div>
@@ -52,7 +38,7 @@ function Dashboard() {
           </div>
         </div>
       )}
-      {isOwner && (
+      {user.user_type === "owner" && (
         <div>
           <div>
             <Link to={{ pathname: "send-invite", state: user.user }}>
@@ -60,7 +46,7 @@ function Dashboard() {
             </Link>
             <div id="invite">
               <Outlet />
-            </div>  
+            </div>
           </div>
 
           <div>
@@ -73,7 +59,7 @@ function Dashboard() {
           </div>
         </div>
       )}
-      {isUser && (
+      {user.user_type === "consumer" && (
         <div>
           <Link to={{ pathname: "/booking", state: { user } }}>Booking</Link>
         </div>
