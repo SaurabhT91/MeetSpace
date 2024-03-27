@@ -19,7 +19,7 @@ class UserSeeder extends Seeder
             'email' => 'saurabhtidgam@gmail.com',
             'contact_number' => '9988783999',
             'address' => 'this is the default address',
-            'user_type' => '001',
+            'user_type' => 'admin',
             'password' => Hash::make('passwordST91'),
         ]);
     }

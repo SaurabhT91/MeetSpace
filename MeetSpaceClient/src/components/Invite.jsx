@@ -8,14 +8,15 @@ function SendInvite() {
   const baseurl = "http://localhost:8000/api/sendInvite";
   const [receivers_email, setEmail] = useState("");
   const [receivers_name, setName] = useState("");
-    const user = useSelector((state) => state.user);
-    const dispatch = useDispatch();
+  const user = useSelector((state) => state.user);
+  const user_type = user.user_type;
+  const dispatch = useDispatch();
 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    let data = qs.stringify({ receivers_email, receivers_name, user });
+    let data = qs.stringify({ receivers_email, receivers_name, user, user_type });
 
     let config = {
       method: "post",
@@ -30,6 +31,7 @@ function SendInvite() {
     try {
       const response = await axios.request(config);
       if (response.status === 200) {
+        alert("Registration successful!");
         setSuccessMessage("Invitation sent successfully!");
       }
     } catch (error) {

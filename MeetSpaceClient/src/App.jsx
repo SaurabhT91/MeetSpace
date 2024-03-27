@@ -10,7 +10,10 @@ function App() {
       <div>
         <h1 className="appName">Welcome to MeetSpace</h1>
         <h2>Book Meeting spaces</h2>
-        <Link to={`login`}>login</Link>
+        <div>
+          <Link to={`login`}>login</Link>
+        </div>
+
       </div>
       <Outlet />
     </>

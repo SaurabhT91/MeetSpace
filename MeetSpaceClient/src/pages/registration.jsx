@@ -1,11 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import qs from "qs";
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 
 function Registration() {
   const baseurl = "http://localhost:8000/api/register";
-  const token = useParams().token;
+
+    const { token } = useParams();
+    const [tokenWithoutType, type] = token.split("&type=");
+  console.log(type);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [contactNumber, setContactNumber] = useState("");
@@ -17,30 +20,28 @@ function Registration() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    let data = qs.stringify({
+    const data = {
       name,
       email,
       contactNumber,
       address,
       password,
       password_confirmation: confirmPassword,
-      token,
-    });
-
-    let config = {
-      method: "post",
-      maxBodyLength: Infinity,
-      url: baseurl,
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      data: data,
+      token: tokenWithoutType,
+      type,
     };
 
+    console.log(type);
+    console.log(data);
+
     try {
-      const response = await axios.request(config);
+      const response = await axios.post(baseurl, qs.stringify(data), {
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+      });
+
       if (response.status === 200) {
-        // Handle successful registration, e.g., show a success message
         alert("Registration successful!");
         window.location.href = "/";
       }

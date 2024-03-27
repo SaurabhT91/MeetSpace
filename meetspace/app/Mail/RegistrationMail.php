@@ -35,10 +35,12 @@ class RegistrationMail extends Mailable
     {
         $baseUrl = "http://localhost:5173/registration";
         $token = $this->details['token'];
+        $invitingTo = $this->details['invitingTo'];
         $subject = 'Welcome to Our Website';
         $content = '<h1>Welcome, ' . $this->details['name'] . '!</h1>';
         $content .= '<p>' . $this->details['content'] . '</p>';
-        $content .= rtrim($baseUrl, '/') .'/'. $token;
+        $content .= rtrim($baseUrl, '/') .'/'. $token . '&type=' . $invitingTo;
+        $content .=
         $content .= '<p>Thank you for joining us.</p>';
 
         return $this->subject($subject)->html($content);

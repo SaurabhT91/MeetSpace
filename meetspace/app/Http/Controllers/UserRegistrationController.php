@@ -7,7 +7,7 @@ use Illuminate\Validation\Rules\Password;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
-
+use Illuminate\Validation\Rule;
 class UserRegistrationController extends Controller
 {
     public function register(Request $request){
@@ -19,6 +19,7 @@ class UserRegistrationController extends Controller
             'email' => ['required', 'string', 'email:rfc,dns', 'max:255', 'unique:' . User::class],
             'contactNumber' => ['required', 'regex:/^([0-9\s\-\+\(\)]*)$/', 'min:10'],
             'address' => ['required', 'string', 'max:255', 'min:3'],
+            'type' => ['required', 'string'],
             'password' => ['required', 'confirmed', Password::defaults()],
         ], [
             'name.required' => 'Name is required.',
@@ -39,17 +40,22 @@ class UserRegistrationController extends Controller
 
             'password.required' => 'Password is required.',
             'password.confirmed' => 'Passwords do not match.',
+
+            'type.in'=> 'Type input was not valid',
         ]);
 
-
+        Log::info($request->type);
 
         $user = User::create([
-             'name' => $request->name,
+            'name' => $request->name,
             'email' => $request->email,
             'contact_number' => $request->contactNumber,
             'address' => $request->address,
+            'user_type' => $request->type,
             'password' => Hash::make($request->password),
        ]);
+
+       return response()->json(array('success',$request->type ,200));
     }
     
 }

@@ -29,13 +29,18 @@ class InvitationController extends Controller
             'token' => $token,
         ]);
 
-
+        $invitingTo = "consumer";
+        if ($request->user_type == 'admin'){
+            $invitingTo = 'owner';
+        }
+        
         $sender = User::where('id', $data['id'])->first();
 
         $details = [
             'name' => $request->receivers_name,
-            'content' => 'This is an email testing using Laravel-Brevo',
+            'content' => 'This is an email to invite you to register to MeetSpace',
             'token' => $token,
+            'invitingTo' => $invitingTo,
         ];
 
         try {
