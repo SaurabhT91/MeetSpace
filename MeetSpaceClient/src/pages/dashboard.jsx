@@ -32,10 +32,9 @@ function Dashboard() {
             <Link to={{ pathname: "/booking", state: { user } }}>Booking</Link>
           </div>
           <div>
-            <Link to={{ pathname: "/addOwner", state: { user } }}>
-              Add Owner
-            </Link>
+            <Link to={{ pathname: "/calendar", state: { user } }}>Calendar</Link>
           </div>
+
         </div>
       )}
       {user.user_type === "owner" && (

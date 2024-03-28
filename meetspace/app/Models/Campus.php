@@ -10,6 +10,8 @@ class Campus extends Model
 {
     use HasFactory;
 
+    protected $fillable = ['name', 'address', 'meeting_rooms','user_id'];
+
     public function campus()
     {
         return $this->belongsTo(User::class, 'user_id');

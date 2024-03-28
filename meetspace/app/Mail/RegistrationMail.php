@@ -40,7 +40,6 @@ class RegistrationMail extends Mailable
         $content = '<h1>Welcome, ' . $this->details['name'] . '!</h1>';
         $content .= '<p>' . $this->details['content'] . '</p>';
         $content .= rtrim($baseUrl, '/') .'/'. $token . '&type=' . $invitingTo;
-        $content .=
         $content .= '<p>Thank you for joining us.</p>';
 
         return $this->subject($subject)->html($content);

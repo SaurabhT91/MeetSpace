@@ -5,11 +5,21 @@ import storage from "redux-persist/lib/storage";
 const initialState = {
   user: null,
   isLoggedIn: false,
+  campusInfo: null,
 };
 
 const userReducer = (state = initialState.user, action) => {
   switch (action.type) {
     case "SET_USER":
+      return action.payload;
+    default:
+      return state;
+  }
+};
+
+const campusInfoReducer = (state = initialState.campusInfo, action) => {
+  switch (action.type) {
+    case "SET_CAMPUS_INFO":
       return action.payload;
     default:
       return state;
@@ -28,6 +38,7 @@ const isLoggedInReducer = (state = initialState.isLoggedIn, action) => {
 const rootReducer = combineReducers({
   user: userReducer,
   isLoggedIn: isLoggedInReducer,
+  campusInfo: campusInfoReducer
 });
 
 const persistConfig = {

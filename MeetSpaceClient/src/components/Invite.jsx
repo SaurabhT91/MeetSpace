@@ -31,7 +31,7 @@ function SendInvite() {
     try {
       const response = await axios.request(config);
       if (response.status === 200) {
-        alert("Registration successful!");
+        alert("Invitation sent successfully!");
         setSuccessMessage("Invitation sent successfully!");
       }
     } catch (error) {

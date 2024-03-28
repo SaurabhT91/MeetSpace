@@ -1,19 +1,24 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import App from "./App.jsx";
+
 import { Provider } from "react-redux";
+import { PersistGate } from "redux-persist/integration/react";
+
 import "./index.css";
 import { store, persistor } from "./store";
-import { PersistGate } from "redux-persist/integration/react";
 import ErrorPage from "./pages/error-page.jsx";
+
+import App from "./App.jsx";
 import Login from "./pages/Login.jsx";
 import Registration from "./pages/registration.jsx";
 import Dashboard from "./pages/dashboard.jsx";
-import SendInvite from "./components/Invite.jsx";
-import BookingSpace from "./pages/bookingpage.jsx";
-import AddOwner from "./pages/addOwner.jsx";
+import BookingPage from "./pages/bookMeetingRoom.jsx";
 import AddCampus from "./pages/addCampus.jsx";
+import Calendar from "./pages/calendar.jsx";
+import AddRooms from "./pages/addRoomsInformation.jsx";
+
+import SendInvite from "./components/Invite.jsx";
 
 const router = createBrowserRouter([
   {
@@ -39,20 +44,29 @@ const router = createBrowserRouter([
       {
         path: "send-invite",
         element: <SendInvite />,
+        errorElement: <ErrorPage />,
       },
     ],
   },
   {
     path: "/booking",
-    element: <BookingSpace />,
-  },
-  {
-    path: "/addOwner",
-    element: <AddOwner />,
+    element: <BookingPage />,
+    errorElement: <ErrorPage />,
   },
   {
     path: "/addcampus",
     element: <AddCampus />,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "/calendar",
+    element: <Calendar />,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "/addRooms",
+    element: <AddRooms />,
+    errorElement: <ErrorPage />,
   },
 ]);
 

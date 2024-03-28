@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('bookings_table', function (Blueprint $table) {
             $table->id();
             $table->foreignID('user_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('room_id')->constrained('rooms_table')->cascadeOnDelete();
+            $table->foreignId('room_id')->constrained('rooms')->cascadeOnDelete();
             $table->string('room_status');
             $table->integer('duration');
             $table->date('date');
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('bookings_table');
+        Schema::dropIfExists('bookings');
     }
 };

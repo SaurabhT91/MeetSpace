@@ -35,6 +35,7 @@ class InvitationController extends Controller
         }
         
         $sender = User::where('id', $data['id'])->first();
+        
 
         $details = [
             'name' => $request->receivers_name,
@@ -43,13 +44,13 @@ class InvitationController extends Controller
             'invitingTo' => $invitingTo,
         ];
 
+        var_dump($details);
+
         try {
             Mail::to($request->receivers_email)->send(new RegistrationMail($details));
-        } catch (\Exception $e) {
-            // Log the error for further investigation
+        } catch (\Exception $e) {           
             Log::error('Failed to send email: ' . $e->getMessage());
 
-            // Return an error response
             return response()->json(['message' => 'Failed to send email'], 500);
         }
 

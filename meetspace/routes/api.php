@@ -4,6 +4,8 @@ use App\Http\Controllers\RegisteredUserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\InvitationController;
+use App\Http\Controllers\PremiseManagementController;
+use App\Http\Controllers\BookMeetingRoomController;
 use App\Http\Controllers\UserRegistrationController;
 
 /*
@@ -18,9 +20,20 @@ use App\Http\Controllers\UserRegistrationController;
 */
 
 Route::post('/login',[RegisteredUserController::class, 'login']);
-Route::post('/sendInvite', [InvitationController::class, 'sendInvite']);
-Route::post('/register', [UserRegistrationController::class, 'register']);
 Route::post('/getUsers/{user_type}', [RegisteredUserController::class, 'users']);
+
+Route::post('/sendInvite', [InvitationController::class, 'sendInvite']);
+
+Route::post('/register', [UserRegistrationController::class, 'register']);
+
+Route::post('/addCampus', [PremiseManagementController::class, 'addCampus']);
+Route::post('/addRoom', [PremiseManagementController::class, 'addRoom']);
+Route::post('/removeCampus',[PremiseManagementController::class, 'removeCampus']);
+Route::post('/removeRoom', [PremiseManagementController::class, 'removeRoom']);
+
+Route::post('/bookMeetingRoom', [BookMeetingRoomController::class, 'meetingRoomInfo']);
+
+
 
 
 
