@@ -1,0 +1,64 @@
+/* login.css */
+
+.loginContainer {
+  max-width: 450px;
+  margin: 0 auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.loginContainer h2 {
+  margin-top: 0;
+}
+
+.loginContainer h3 {
+  margin-top: 10px;
+  font-size: 18px;
+}
+
+.loginContainer form {
+  margin-top: 20px;
+  width: 100%;
+}
+
+.loginContainer input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box; 
+}
+
+.loginContainer #email,
+.loginContainer #loginPassword {
+  max-width: 100%; 
+}
+
+.loginContainer button {
+  width: 50%; 
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  background-color: #007bff;
+  color: #fff;
+  cursor: pointer;
+}
+
+.loginContainer button:hover {
+  background-color: #0056b3;
+}
+
+.loginContainer .error {
+  color: red;
+  margin-top: 5px; 
+}
+
+.network-error {
+  font-weight: bold;
+}

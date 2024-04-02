@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import qs from "qs";
+import '../styles/login.css';
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 
@@ -63,7 +64,7 @@ function Login() {
   };
 
   return (
-    <div>
+    <div class="loginContainer">
       <div>
         <h2>Login</h2>
         <h3>Enter your credentials</h3>
@@ -73,6 +74,7 @@ function Login() {
         <form onSubmit={handleSubmit}>
           <div id="login-email">
             <input
+              id="email"
               name="email"
               type="email"
               placeholder="Enter your email address"
@@ -86,6 +88,7 @@ function Login() {
 
           <div id="login-password">
             <input
+              id="loginPassword"
               name="password"
               type="password"
               placeholder="Enter your password"
