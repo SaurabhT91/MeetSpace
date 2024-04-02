@@ -32,6 +32,9 @@ Route::post('/removeCampus',[PremiseManagementController::class, 'removeCampus']
 Route::post('/removeRoom', [PremiseManagementController::class, 'removeRoom']);
 
 Route::post('/bookMeetingRoom', [BookMeetingRoomController::class, 'meetingRoomInfo']);
+Route::post('/bookingRequest', [BookMeetingRoomController::class, 'bookingRequest']);
+Route::post('/bookingSchedule/{id}', [BookMeetingRoomController::class, 'bookingSchedule']);
+
 
 
 

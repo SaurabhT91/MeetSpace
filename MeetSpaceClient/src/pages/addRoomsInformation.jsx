@@ -8,8 +8,6 @@ function AddRooms() {
   const campusInfo = useSelector((state) => state.campusInfo);
   const navigate = useNavigate();
   const user = useSelector((state) => state.user);
-  const CampusName = campusInfo.premiseName;
-  const campuseID = campusInfo.campuseID;
   const [roomData, setRoomData] = useState(
     Array.from({ length: campusInfo.rooms || 5 }, () => ({
       roomName: "",

@@ -1,14 +1,22 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { useSelector } from "react-redux";
+import { useNavigate, Link } from "react-router-dom";
 
-const BookingPage = () => {
+
+function BookingPage() {
+  const isDisabled = (date) => date < new Date();
+  const user = useSelector((state) => state.user);
   const [responseData, setResponseData] = useState({ campuses: [], rooms: [] });
   const [bookingDetails, setBookingDetails] = useState({
     roomId: null,
     date: "",
-    time: "",
+    startTime: "",
+    endTime: "",
     duration: "",
   });
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -23,7 +31,7 @@ const BookingPage = () => {
     };
 
     fetchData();
-  }, []); // Run only once on component mount
+  }, []);  
 
   const handleInputChange = (e) => {
     setBookingDetails({ ...bookingDetails, [e.target.name]: e.target.value });
@@ -32,13 +40,22 @@ const BookingPage = () => {
   const handleBookingSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:8000/api/bookRoom", {
-        roomId: bookingDetails.roomId,
-        date: bookingDetails.date,
-        time: bookingDetails.time,
-        duration: bookingDetails.duration,
-      });
-      console.log("Booking successful:", response.data);
+      const response = await axios.post(
+        "http://localhost:8000/api/bookingRequest",
+        {
+          roomId: bookingDetails.roomId,
+          date: bookingDetails.date,
+          startTime: bookingDetails.startTime,
+          endTime: bookingDetails.endTime,
+          duration: bookingDetails.duration,
+          user: user,
+        }
+      );
+      const bookingConfirmed = response.data.Booking_data;
+      alert(response.data.message);
+      console.log("Booking successful:", response.data.Booking_data);
+      navigate("/dashboard");
+
     } catch (error) {
       console.error("Error booking room:", error);
     }
@@ -47,6 +64,9 @@ const BookingPage = () => {
   return (
     <div>
       <h1>Booking Page</h1>
+      <div>
+        <Link to="/dashboard">Dashboard</Link>
+      </div>
       <h2>Meeting Rooms</h2>
       <table>
         <thead>
@@ -66,7 +86,6 @@ const BookingPage = () => {
               <td>{room.room_capacity}</td>
               <td>{room.room_charges}</td>
               <td>
-                {/* Find the corresponding campus for the room */}
                 {
                   responseData.campuses.find(
                     (campus) => campus.id === room.campuses_id
@@ -74,7 +93,6 @@ const BookingPage = () => {
                 }
               </td>
               <td>
-                {/* Display the address of the corresponding campus */}
                 {
                   responseData.campuses.find(
                     (campus) => campus.id === room.campuses_id
@@ -111,11 +129,21 @@ const BookingPage = () => {
             </label>
             <br />
             <label>
-              Time:
+              Meeting starts at:
               <input
                 type="time"
-                name="time"
-                value={bookingDetails.time}
+                name="startTime"
+                value={bookingDetails.startTime}
+                onChange={handleInputChange}
+              />
+            </label>
+            <br />
+            <label>
+              Meeting ends at:
+              <input
+                type="time"
+                name="endTime"
+                value={bookingDetails.endTime}
                 onChange={handleInputChange}
               />
             </label>
@@ -136,6 +164,6 @@ const BookingPage = () => {
       )}
     </div>
   );
-};
+}
 
 export default BookingPage;

@@ -11,13 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('bookings_table', function (Blueprint $table) {
+        Schema::create('bookings', function (Blueprint $table) {
             $table->id();
             $table->foreignID('user_id')->constrained()->cascadeOnDelete();
             $table->foreignId('room_id')->constrained('rooms')->cascadeOnDelete();
-            $table->string('room_status');
-            $table->integer('duration');
             $table->date('date');
+            $table->string('start_time');
+            $table->string('end_time');
+            $table->integer('duration');
+
             $table->timestamps();
         });
     }

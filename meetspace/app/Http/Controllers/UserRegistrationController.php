@@ -55,7 +55,7 @@ class UserRegistrationController extends Controller
             'password' => Hash::make($request->password),
        ]);
 
-       return response()->json(array('success',$request->type ,200));
+       return response()->json(array('success',200));
     }
     
 }
