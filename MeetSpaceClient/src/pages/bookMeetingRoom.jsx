@@ -25,6 +25,7 @@ function BookingPage() {
           "http://localhost:8000/api/bookMeetingRoom"
         );
         setResponseData(response.data);
+        console.log(response.data);
       } catch (error) {
         console.error("Error fetching data:", error);
       }

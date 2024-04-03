@@ -64,7 +64,7 @@ function Login() {
   };
 
   return (
-    <div class="loginContainer">
+    <div className="loginContainer">
       <div>
         <h2>Login</h2>
         <h3>Enter your credentials</h3>
@@ -72,9 +72,9 @@ function Login() {
 
       <div>
         <form onSubmit={handleSubmit}>
-          <div id="login-email">
+          <div>
             <input
-              id="email"
+              id="loginemail"
               name="email"
               type="email"
               placeholder="Enter your email address"
