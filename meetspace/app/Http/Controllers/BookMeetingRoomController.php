@@ -24,34 +24,47 @@ class BookMeetingRoomController extends Controller
         return response()->json($responseData, 200);
     }
 
-    public function bookingRequest(Request $request){
+    public function bookingRequest(Request $request)
+    {
 
-        Log::info($request);
-        
-        $validator = Validator::make($request->all(), [
+        // Log::info($request);
 
-            'roomsId' => ['required', 'string'], 
-            'date' => ['required', 'date', 'min:3', 'max:50'],
-            'startTime' => ['required', 'time'],
-            'endTime' => ['required', 'time'],
-            'duration' => ['required', 'integer'],
-            'user.*.id' => ['required', 'string'],            
-        ],
-        [
-            'roomsID.required' => 'Room ID is required',
-            'date.required' => 'Select a Date for booking',
-            'starTime.required' => 'Your meeting is starts at',
-            'endTime.required' => 'Your meeting ends at',
-            'duration.required' => 'Duration of meeting is required',
-            'user.*.id.required' => 'User ID is required',
-        ]);
+        $validator = Validator::make(
+            $request->all(),
+            [
 
-        $checkClash = Booking::where('date', $request->date)->where('start_time', '>=', $request->startTime)->where('endTime', '<=', $request->endTime);
-        
-        if($checkClash){
+                'roomsId' => ['required', 'string'],
+                'date' => ['required', 'date', 'min:3', 'max:50'],
+                'startTime' => ['required', 'time'],
+                'endTime' => ['required', 'time'],
+                'duration' => ['required', 'integer'],
+                'user.*.id' => ['required', 'string'],
+            ],
+            [
+                'roomsID.required' => 'Room ID is required',
+                'date.required' => 'Select a Date for booking',
+                'starTime.required' => 'Your meeting is starts at',
+                'endTime.required' => 'Your meeting ends at',
+                'duration.required' => 'Duration of meeting is required',
+                'user.*.id.required' => 'User ID is required',
+            ]
+        );
+
+
+        $startTimeClash = Booking::whereDate('date', $request->date)
+            ->where('room_id', '=', $request->roomId)
+            ->where('start_time', '<', $request->endTime)
+            ->where('end_time', '>', $request->startTime)
+            ->first();
+
+        $endTimeClash = Booking::whereDate('date', $request->date)
+            ->where('room_id', '=', $request->roomId)
+            ->where('start_time', '<', $request->endTime)
+            ->where('end_time', '>', $request->startTime)
+            ->first();
+        if ($startTimeClash or $endTimeClash) {
 
             return response()->json(['message' => 'Sorry booking slot is not available']);
-
         }
 
         Booking::create([
@@ -67,26 +80,34 @@ class BookMeetingRoomController extends Controller
 
         $data = Booking::where('user_id', $request->user['id'])->first();
 
-        return response()->json(['message'=>'Booking created Successfully', 'Booking_data' => $data], 200);
-
+        return response()->json(['message' => 'Booking created Successfully', 'Booking_data' => $data], 200);
     }
 
-    public function bookingSchedule($id){
+    public function bookingSchedule($id)
+    {
 
         $ldate = date('Y-m-d');
-        $roomData = Booking::where('user_id', $id)->whereDate('date', '>=' , $ldate)->get();
+        $bookingData = Booking::where('user_id', $id)->whereDate('date', '>=', $ldate)->get();
 
-        $campusData = [];
-        foreach($roomData as $data){
+        $showData = [];
+        foreach ($bookingData as $data) {
 
-
+            $campusaddress =
             $temp = Room::where('id', '=', $data['room_id'])->get('campuses_id');
             $temp = $temp[0]['campuses_id'];
-            $campusData[] =  Campus::where('id', $temp)->first();
+            $campusaddress = Campus::where('id', $temp)->get('address');
+            $campusname = Campus::where('id', $temp)->get('name');
+            $roomName = Room::where('id', '=', $data['room_id'])->get('room_name');
+            $startTime = $data->start_time;
+            $endTime = $data->end_time;
+            $date = $data->date;
+
+            array_push($showData, ['bookings' => ['address'=>$campusaddress[0]['address'], 'name'=>$campusname[0]['name'], 'room' => $roomName[0]['room_name'], 'startTime' => $startTime, 'endTime' => $endTime, 'date' => $date]]);
 
         }
 
 
-        return response()->json([$campusData, $roomData]);
+
+        return response()->json([$showData]);
     }
 }

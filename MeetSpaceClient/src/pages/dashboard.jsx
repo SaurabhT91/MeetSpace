@@ -1,21 +1,18 @@
 import React, { useState, useEffect } from "react";
-import { useLocation, Link, Outlet } from "react-router-dom";
+import { Link, Outlet } from "react-router-dom";
 import axios from "axios";
+import '../styles/dashboard.css';
 import { useSelector, useDispatch } from "react-redux";
 
 function Dashboard() {
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
+  const [bookingData, setBookingData] = useState([]);
 
-  const [responseData, setResponseData] = useState("");
   const id = user.id;
-  console.log(user.id);
-
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
 
   const handleLogout = () => {
     localStorage.clear();
-    setIsLoggedIn(false);
     window.location.href = "/";
   };
 
@@ -23,11 +20,11 @@ function Dashboard() {
     const fetchData = async () => {
       try {
         const response = await axios.post(
-          `http://localhost:8000/api/bookingSchedule/${id}`,
+          `http://localhost:8000/api/bookingSchedule/${id}`
         );
-        setResponseData(response.data);
-        
-      } catch (error) {
+        setBookingData(response.data);
+      }
+      catch (error) {
         console.error("Error fetching data:", error);
       }
     };
@@ -36,55 +33,25 @@ function Dashboard() {
   }, []);
 
   return (
-    <div>
-      <h1>Dashboard</h1>
-      <h3>{user && user.name}</h3>
-      {user.user_type === "admin" && (
-        <div>
-          <div>
-            <Link to={{ pathname: "send-invite" }}>Send Invite</Link>
-            <div id="invite">
-              <Outlet />
-            </div>
-          </div>
-          <div>
-            <Link to={{ pathname: "/booking", state: { user } }}>Booking</Link>
-          </div>
-          <div>
-            <Link to={{ pathname: "/calendar", state: { user } }}>
-              Calendar
-            </Link>
-          </div>
-        </div>
-      )}
-      {user.user_type === "owner" && (
-        <div>
-          <div>
-            <Link to={{ pathname: "send-invite", state: user.user }}>
-              Send Invite
-            </Link>
-            <div id="invite">
-              <Outlet />
-            </div>
-          </div>
+    <div className="container">
+      <div className="header">
+        <h1>Dashboard</h1>
+        <h3 className="userName">{user.name}</h3>
+      </div>
 
-          <div>
-            <Link to={{ pathname: "/booking", state: { user } }}>Booking</Link>
-          </div>
-          <div>
-            <Link to={{ pathname: "/addCampus", state: { user } }}>
-              Add Campus
-            </Link>
-          </div>
-        </div>
-      )}
-      {user.user_type === "consumer" && (
+      <div className="nav">
         <div>
+          <Link to={{ pathname: "send-invite" }}>Send Invite</Link>
           <Link to={{ pathname: "/booking", state: { user } }}>Booking</Link>
+          <Link to={{ pathname: "/calendar", state: { user } }}>Calendar</Link>
         </div>
-      )}
-
+        <button onClick={handleLogout}>Logout</button>
+      </div>
       <div>
+        <Outlet />
+      </div>
+
+      <div className="table-container">
         <table>
           <thead>
             <tr>
@@ -94,15 +61,22 @@ function Dashboard() {
               <th>Date</th>
               <th>Start Time</th>
               <th>End Time</th>
-              <th>Duration</th>
             </tr>
           </thead>
           <tbody>
-
+            {bookingData.flat().map((booking, index) => (
+              <tr key={index}>
+                <td>{booking.bookings.name}</td>
+                <td>{booking.bookings.address}</td>
+                <td>{booking.bookings.room}</td>
+                <td>{booking.bookings.date}</td>
+                <td>{booking.bookings.startTime}</td>
+                <td>{booking.bookings.endTime}</td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
-      <button onClick={handleLogout}>Logout</button>
     </div>
   );
 }
