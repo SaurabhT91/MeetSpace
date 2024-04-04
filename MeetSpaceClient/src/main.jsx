@@ -19,6 +19,7 @@ import Calendar from "./pages/calendar.jsx";
 import AddRooms from "./pages/addRoomsInformation.jsx";
 
 import SendInvite from "./components/Invite.jsx";
+import RoomData from "./components/roomData.jsx";
 
 const router = createBrowserRouter([
   {
@@ -52,6 +53,13 @@ const router = createBrowserRouter([
     path: "/booking",
     element: <BookingPage />,
     errorElement: <ErrorPage />,
+    children: [
+      {  
+      path: "roomdata",
+      element: <RoomData />,
+        errorElement: <ErrorPage />,
+      },
+    ],
   },
   {
     path: "/addcampus",

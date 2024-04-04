@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Link, Outlet } from "react-router-dom";
 import axios from "axios";
-import '../styles/dashboard.css';
+import "../styles/dashboard.css";
 import { useSelector, useDispatch } from "react-redux";
 
 function Dashboard() {
-  const user = useSelector((state) => state.user);
+  const user = useSelector((state) => state.auth.user); // Corrected selector
   const dispatch = useDispatch();
   const [bookingData, setBookingData] = useState([]);
 
@@ -23,8 +23,7 @@ function Dashboard() {
           `http://localhost:8000/api/bookingSchedule/${id}`
         );
         setBookingData(response.data);
-      }
-      catch (error) {
+      } catch (error) {
         console.error("Error fetching data:", error);
       }
     };

@@ -1,57 +1,32 @@
-import { configureStore, combineReducers } from "@reduxjs/toolkit";
+// store.js
+import { configureStore } from "@reduxjs/toolkit";
+import { setupListeners } from "@reduxjs/toolkit/query/react";
+import { authApi } from "./services/authAPI";
 import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
-
-const initialState = {
-  user: null,
-  isLoggedIn: false,
-  campusInfo: null,
-};
-
-const userReducer = (state = initialState.user, action) => {
-  switch (action.type) {
-    case "SET_USER":
-      return action.payload;
-    default:
-      return state;
-  }
-};
-
-const campusInfoReducer = (state = initialState.campusInfo, action) => {
-  switch (action.type) {
-    case "SET_CAMPUS_INFO":
-      return action.payload;
-    default:
-      return state;
-  }
-};
-
-const isLoggedInReducer = (state = initialState.isLoggedIn, action) => {
-  switch (action.type) {
-    case "SET_LOGGED_IN":
-      return action.payload;
-    default:
-      return state;
-  }
-};
-
-const rootReducer = combineReducers({
-  user: userReducer,
-  isLoggedIn: isLoggedInReducer,
-  campusInfo: campusInfoReducer
-});
+import { combineReducers } from "redux";
+import authReducer from "./slices/authSlice";
 
 const persistConfig = {
   key: "root",
   storage,
+  whitelist: ["auth"],
 };
 
-const persistedReducer = persistReducer(persistConfig, rootReducer);
+const persistedReducer = persistReducer(
+  persistConfig,
+  combineReducers({
+    auth: authReducer,
+    [authApi.reducerPath]: authApi.reducer,
+  })
+);
 
-const store = configureStore({
+export const store = configureStore({
   reducer: persistedReducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(authApi.middleware),
 });
 
-const persistor = persistStore(store);
+setupListeners(store.dispatch);
 
-export { store, persistor };
+export const persistor = persistStore(store);

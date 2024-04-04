@@ -1,13 +1,18 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { Suspense } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate, Link } from "react-router-dom";
+import RoomData from "../components/roomData.jsx";
 
+
+function Loading() {
+  return <h2>🌀 Loading...</h2>;
+}
 
 function BookingPage() {
   const isDisabled = (date) => date < new Date();
   const user = useSelector((state) => state.user);
-  const [responseData, setResponseData] = useState({ campuses: [], rooms: [] });
   const [bookingDetails, setBookingDetails] = useState({
     roomId: null,
     date: "",
@@ -16,23 +21,7 @@ function BookingPage() {
     duration: "",
   });
 
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.post(
-          "http://localhost:8000/api/bookMeetingRoom"
-        );
-        setResponseData(response.data);
-        console.log(response.data);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-
-    fetchData();
-  }, []);  
+  const navigate = useNavigate(); 
 
   const handleInputChange = (e) => {
     setBookingDetails({ ...bookingDetails, [e.target.name]: e.target.value });
@@ -69,52 +58,11 @@ function BookingPage() {
         <Link to="/dashboard">Dashboard</Link>
       </div>
       <h2>Meeting Rooms</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Capacity</th>
-            <th>Charges</th>
-            <th>Campus</th>
-            <th>Campus Address</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {responseData.rooms.map((room) => (
-            <tr key={room.id}>
-              <td>{room.room_name}</td>
-              <td>{room.room_capacity}</td>
-              <td>{room.room_charges}</td>
-              <td>
-                {
-                  responseData.campuses.find(
-                    (campus) => campus.id === room.campuses_id
-                  )?.name
-                }
-              </td>
-              <td>
-                {
-                  responseData.campuses.find(
-                    (campus) => campus.id === room.campuses_id
-                  )?.address
-                }
-              </td>
-              <td>
-                <button
-                  onClick={() =>
-                    setBookingDetails({ ...bookingDetails, roomId: room.id })
-                  }
-                >
-                  Book
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
 
-      {/* Booking Form */}
+      
+        <RoomData />
+
+      
       {bookingDetails.roomId && (
         <div>
           <h2>Book Room</h2>
