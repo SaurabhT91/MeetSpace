@@ -18,21 +18,19 @@ class RegisteredUserController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()], 422);
+            return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        $user = User::where('email', $request->email)->first();
+        $credentials = $request->only('email', 'password');
 
-        if (!$user) {
-            return response()->json(['error' => 'User not found'], 404);
+        if (Auth::attempt($credentials)) {
+            $user = Auth::user();
+            return response()->json(['message' => 'Login successful', 'user' => $user], 200);
         }
 
-        if (!Hash::check($request->password, $user->password)) {
-            return response()->json(['error' => 'Incorrect password'], 401);
-        }
-
-        return response()->json(['message' => 'Login successful', 'user' => $user], 200);
+        return response()->json(['error' => 'Invalid credentials'], 401);
     }
+
     public function users(Request $request, $user_type){
         
         if($user_type == 'admins'){
