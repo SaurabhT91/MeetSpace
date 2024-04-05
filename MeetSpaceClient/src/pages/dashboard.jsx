@@ -1,14 +1,21 @@
 import React, { useState, useEffect } from "react";
 import { Link, Outlet } from "react-router-dom";
-import axios from "axios";
 import "../styles/dashboard.css";
+import { setBookingData } from "../slices/bookingInformationSlice";
+import { useFetchBookingDataQuery } from "../services/bookingInfoAPI";
 import { useSelector, useDispatch } from "react-redux";
 
 function Dashboard() {
-  const user = useSelector((state) => state.auth.user); // Corrected selector
+  const user = useSelector((state) => state.auth.user);
   const dispatch = useDispatch();
-  const [bookingData, setBookingData] = useState([]);
 
+    const {
+      data: bookingData,
+      error,
+      isLoading,
+    } = useFetchBookingDataQuery(user.id);
+  console.log(bookingData);
+  
   const id = user.id;
 
   const handleLogout = () => {
@@ -17,19 +24,19 @@ function Dashboard() {
   };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.post(
-          `http://localhost:8000/api/bookingSchedule/${id}`
-        );
-        setBookingData(response.data);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
+    if (bookingData) {
+      dispatch(setBookingData(bookingData));
+    }
+  }, [bookingData, dispatch]);
 
-    fetchData();
-  }, []);
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error.message}</div>;
+  }
+
 
   return (
     <div className="container">

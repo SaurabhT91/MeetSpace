@@ -10,7 +10,9 @@ function SendInvite() {
   const [receivers_email, setEmail] = useState("");
   const [receivers_name, setName] = useState("");
   const [error, setError] = useState("");
-  const user = useSelector((state) => state.user);
+  
+  const user = useSelector((state) => state.auth.user);
+  
   const user_type = user.user_type;
   const dispatch = useDispatch();
 

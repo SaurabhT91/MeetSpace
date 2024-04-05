@@ -1,18 +1,14 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Suspense } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate, Link } from "react-router-dom";
 import RoomData from "../components/roomData.jsx";
-
-
-function Loading() {
-  return <h2>🌀 Loading...</h2>;
-}
+import BookMeetingRoom from "../components/bookRoom.jsx";
 
 function BookingPage() {
-  const isDisabled = (date) => date < new Date();
   const user = useSelector((state) => state.user);
+  const navigate = useNavigate(); 
+
   const [bookingDetails, setBookingDetails] = useState({
     roomId: null,
     date: "",
@@ -21,7 +17,7 @@ function BookingPage() {
     duration: "",
   });
 
-  const navigate = useNavigate(); 
+  
 
   const handleInputChange = (e) => {
     setBookingDetails({ ...bookingDetails, [e.target.name]: e.target.value });
@@ -58,59 +54,7 @@ function BookingPage() {
         <Link to="/dashboard">Dashboard</Link>
       </div>
       <h2>Meeting Rooms</h2>
-
-      
         <RoomData />
-
-      
-      {bookingDetails.roomId && (
-        <div>
-          <h2>Book Room</h2>
-          <form onSubmit={handleBookingSubmit}>
-            <label>
-              Date:
-              <input
-                type="date"
-                name="date"
-                value={bookingDetails.date}
-                onChange={handleInputChange}
-              />
-            </label>
-            <br />
-            <label>
-              Meeting starts at:
-              <input
-                type="time"
-                name="startTime"
-                value={bookingDetails.startTime}
-                onChange={handleInputChange}
-              />
-            </label>
-            <br />
-            <label>
-              Meeting ends at:
-              <input
-                type="time"
-                name="endTime"
-                value={bookingDetails.endTime}
-                onChange={handleInputChange}
-              />
-            </label>
-            <br />
-            <label>
-              Duration (in hours):
-              <input
-                type="number"
-                name="duration"
-                value={bookingDetails.duration}
-                onChange={handleInputChange}
-              />
-            </label>
-            <br />
-            <button type="submit">Confirm Booking</button>
-          </form>
-        </div>
-      )}
     </div>
   );
 }

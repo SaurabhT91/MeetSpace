@@ -1,33 +1,43 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useNavigate, Link } from "react-router-dom";
-
+import { setcampusAndRoomData } from "../slices/campus&roomSlice";
+import { useFetchCampusAndRoomDataQuery } from "../services/campus&roomInfoAPI";
+import BookMeetingRoom from "./bookRoom";
 
 function RoomData() {
+  const user = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+  const [selectedRoomId, setSelectedRoomId] = useState(null);
 
-    const user = useSelector((state) => state.user);
-    const [responseData, setResponseData] = useState({ campuses: [], rooms: [] });
+  const {
+    data: campusAndRoomData,
+    error,
+    isLoading,
+  } = useFetchCampusAndRoomDataQuery();
+  console.log(campusAndRoomData);
 
-    
-//   useEffect(() => {
-//     const fetchData = async () => {
-//       try {
-//         const response = await axios.post(
-//           "http://localhost:8000/api/bookMeetingRoom"
-//         );
-//         setResponseData(response.data);
-//         console.log(response.data);
-//       } catch (error) {
-//         console.error("Error fetching data:", error);
-//       }
-//     };
+  useEffect(() => {
+    if (campusAndRoomData) {
+      dispatch(setcampusAndRoomData(campusAndRoomData));
+    }
+  }, [campusAndRoomData, dispatch]);
 
-//     fetchData();
-    //   }, []);
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
+  if (error) {
+    return <div>Error: {error.message}</div>;
+  }
 
-    return (
+  const handleBookClick = (roomId) => {
+    setSelectedRoomId(roomId);
+  };
+
+  return (
+    <div>
       <table>
         <thead>
           <tr>
@@ -40,39 +50,40 @@ function RoomData() {
           </tr>
         </thead>
         <tbody>
-          {responseData.rooms.map((room) => (
+          {campusAndRoomData.rooms.map((room) => (
             <tr key={room.id}>
               <td>{room.room_name}</td>
               <td>{room.room_capacity}</td>
               <td>{room.room_charges}</td>
               <td>
                 {
-                  responseData.campuses.find(
+                  campusAndRoomData.campuses.find(
                     (campus) => campus.id === room.campuses_id
                   )?.name
                 }
               </td>
               <td>
                 {
-                  responseData.campuses.find(
+                  campusAndRoomData.campuses.find(
                     (campus) => campus.id === room.campuses_id
                   )?.address
                 }
               </td>
               <td>
-                <button
-                  onClick={() =>
-                    setBookingDetails({ ...bookingDetails, roomId: room.id })
-                  }
-                >
-                  Book
-                </button>
+                <button onClick={() => handleBookClick(room.id)}>Book</button>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
-    );
+      {selectedRoomId && (
+        <div>
+          <h2>Book Room</h2>
+          <BookMeetingRoom roomId={selectedRoomId} user={user} />
+        </div>
+      )}
+    </div>
+  );
 }
 
 export default RoomData;

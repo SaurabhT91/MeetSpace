@@ -14,11 +14,11 @@ export const authApi = createApi({
         console.error("Login error:", error);
         throw error;
       },
-      onSuccess: (data, variables, context) => {
+      onSuccess: (data) => {
         return data.user;
       },
     }),
   }),
 });
 
-export const { useLoginUserMutation } = authApi;
+export const { useLoginUserMutation }  = authApi;
