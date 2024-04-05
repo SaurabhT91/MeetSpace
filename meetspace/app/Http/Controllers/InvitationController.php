@@ -14,7 +14,8 @@ class InvitationController extends Controller
 {
     public function sendInvite(Request $request)
     {
-        $data = $request->user;
+        $data = $request;
+        Log::info($request);
         $token = Str::random(40);
 
         $request->validate([

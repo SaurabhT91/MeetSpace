@@ -1,0 +1,75 @@
+.registration-container {
+  width: 100%; /* Optionally, set width to 100% */
+  max-width: 800px; /* Set a fixed width */
+  margin: 0 auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+}
+
+
+.registration-container h2 {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.registration-container form {
+  display: flex;
+  flex-direction: column;
+}
+
+.registration-container input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+
+.registration-container input::placeholder {
+  color: #999;
+}
+
+.registration-container button {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  align-self: center; /* Center the button horizontally */
+}
+
+.registration-container button:hover {
+  background-color: #0056b3;
+}
+
+.error {
+  color: red;
+  margin-bottom: 15px;
+}
+
+/* Responsive styles */
+@media screen and (max-width: 1200px) {
+  .registration-container {
+    max-width: 80%;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .registration-container {
+    padding: 10px;
+  }
+
+  .registration-container h2 {
+    font-size: 20px;
+  }
+
+  .registration-container input,
+  .registration-container button {
+    padding: 8px;
+    margin-bottom: 10px;
+  }
+}

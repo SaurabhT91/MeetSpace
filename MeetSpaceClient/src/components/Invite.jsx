@@ -1,71 +1,49 @@
-import React, { useState } from "react";
-import axios from "axios";
-import qs from "qs";
-import { useLocation } from "react-router-dom";
+import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { useInviteUserMutation } from "../services/inviteAPI";
+import { setError } from "../slices/inviteSlice";
 import "../styles/dashboard.css"; // Import the CSS file for styling
 
 function SendInvite() {
-  const baseurl = "http://localhost:8000/api/sendInvite";
   const [receivers_email, setEmail] = useState("");
   const [receivers_name, setName] = useState("");
-  const [error, setError] = useState("");
-  
-  const user = useSelector((state) => state.auth.user);
-  
-  const user_type = user.user_type;
   const dispatch = useDispatch();
+  const { error: apiError } =
+    useSelector((state) => state.invitationSlice) || {}; // Handle undefined state
+  const [inviteUser, { isLoading }] = useInviteUserMutation();
+  const user = useSelector((state) => state.auth.user); // Replace with your logic for user info
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     // Check if email and name are empty
     if (!receivers_email.trim()) {
-      setError("Email is necessary.");
+      dispatch(setError("Email is necessary."));
       return;
     }
 
     if (!receivers_name.trim()) {
-      setError("Name is necessary.");
+      dispatch(setError("Name is necessary."));
       return;
     }
 
-    let data = qs.stringify({
-      receivers_email,
-      receivers_name,
-      user,
-      user_type,
-    });
-
-    let config = {
-      method: "post",
-      maxBodyLength: Infinity,
-      url: baseurl,
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      data: data,
-    };
-
     try {
-      const response = await axios.request(config);
-      if (response.status === 200) {
-        alert("Invitation sent successfully!");
-        // Optionally, reset the input fields after successful submission
-        setEmail("");
-        setName("");
-        setError(""); // Clear any previous error messages
-      }
+      await inviteUser({ receivers_email, receivers_name, id: user.id, name: user.name }); // Include sender information
+      alert("Invitation sent successfully!");
+      // Optionally, reset the input fields after successful submission
+      setEmail("");
+      setName("");
     } catch (error) {
-      if (error.response) {
-        setError(error.response.data.message);
-      } else if (error.request) {
-        setError("Network error. Please try again later.");
-      } else {
-        setError("An unexpected error occurred. Please try again later.");
-      }
+      dispatch(setError(error.toString()));
     }
   };
+
+  useEffect(() => {
+    if (apiError) {
+      alert(apiError); // Or display the error in a dedicated UI element
+      dispatch(setError(null)); // Clear the error after displaying it
+    }
+  }, [apiError, dispatch]); // Run effect on error or dispatch change
 
   return (
     <div className="send-invite-container">
@@ -93,10 +71,10 @@ function SendInvite() {
           />
         </div>
 
-        {error && <p className="error-message">{error}</p>}
+        {apiError && <p className="error-message">{apiError}</p>}
 
-        <button type="submit" className="send-invite-btn">
-          Send Invite
+        <button type="submit" className="send-invite-btn" disabled={isLoading}>
+          {isLoading ? "Sending..." : "Send Invite"}
         </button>
       </form>
     </div>

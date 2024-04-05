@@ -7,12 +7,16 @@ import authReducer from "./slices/authSlice";
 import { authApi } from "./services/authAPI";
 import { bookingInfoAPI } from "./services/bookingInfoAPI";
 import { campusAndRoomInfoAPI } from "./services/campus&roomInfoAPI";
-import { bookMeetSpaceAPI } from "./services/bookMeetSpaceAPI"; // Import bookMeetSpaceAPI
+import { bookMeetSpaceAPI } from "./services/bookMeetSpaceAPI";
+import { inviteAPI } from "./services/inviteAPI"; // Import inviteAPI
+import { registrationSlice } from "./slices/registrationSlice"; // Import registrationSlice
+import { registrationApi } from "./services/registrationAPI"; // Import registrationApi
 
+// Add inviteAPI and registrationApi reducers to the whitelist
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: ["auth"],
+  whitelist: ["auth", "inviteAPI"],
 };
 
 const persistedReducer = persistReducer(
@@ -23,6 +27,9 @@ const persistedReducer = persistReducer(
     [bookingInfoAPI.reducerPath]: bookingInfoAPI.reducer,
     [campusAndRoomInfoAPI.reducerPath]: campusAndRoomInfoAPI.reducer,
     [bookMeetSpaceAPI.reducerPath]: bookMeetSpaceAPI.reducer,
+    [inviteAPI.reducerPath]: inviteAPI.reducer,
+    registration: registrationSlice.reducer,
+    [registrationApi.reducerPath]: registrationApi.reducer,
   })
 );
 
@@ -34,6 +41,7 @@ export const store = configureStore({
       bookingInfoAPI.middleware,
       campusAndRoomInfoAPI.middleware,
       bookMeetSpaceAPI.middleware,
+      registrationApi.middleware,
     ]),
 });
 
