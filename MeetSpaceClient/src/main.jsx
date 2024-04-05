@@ -1,14 +1,13 @@
 import React from "react";
-import ReactDOM from "react-dom/client";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
-
-import { Provider } from "react-redux";
+import { createRoot } from "react-dom/client"; // Import createRoot from react-dom/client
 import { PersistGate } from "redux-persist/integration/react";
 
-import "./index.css";
+import { Provider } from "react-redux";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { store, persistor } from "./store";
-import ErrorPage from "./pages/error-page.jsx";
 
+import "./index.css";
+import ErrorPage from "./pages/error-page.jsx";
 import App from "./App.jsx";
 import Login from "./pages/Login.jsx";
 import Registration from "./pages/registration.jsx";
@@ -16,8 +15,9 @@ import Dashboard from "./pages/dashboard.jsx";
 import BookingPage from "./pages/bookMeetingRoom.jsx";
 import AddCampus from "./pages/addCampus.jsx";
 import Calendar from "./pages/calendar.jsx";
-import AddRooms from "./pages/addRoomsInformation.jsx";
 
+
+import AddRooms from "./pages/addRoomsInformation.jsx";
 import SendInvite from "./components/Invite.jsx";
 import RoomData from "./components/roomData.jsx";
 
@@ -54,9 +54,9 @@ const router = createBrowserRouter([
     element: <BookingPage />,
     errorElement: <ErrorPage />,
     children: [
-      {  
-      path: "roomdata",
-      element: <RoomData />,
+      {
+        path: "roomdata",
+        element: <RoomData />,
         errorElement: <ErrorPage />,
       },
     ],
@@ -78,7 +78,8 @@ const router = createBrowserRouter([
   },
 ]);
 
-ReactDOM.createRoot(document.getElementById("root")).render(
+createRoot(document.getElementById("root")).render(
+  // Use createRoot from react-dom/client
   <React.StrictMode>
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>

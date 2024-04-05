@@ -23,3 +23,4 @@ export const selectRegistering = (state) => state.registration.registering;
 export const selectRegistrationError = (state) => state.registration.error;
 
 export default registrationSlice.reducer;
+

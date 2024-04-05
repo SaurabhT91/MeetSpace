@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { Link, Outlet } from "react-router-dom";
 import "../styles/dashboard.css";
 import { setBookingData } from "../slices/bookingInformationSlice";
@@ -9,14 +9,11 @@ function Dashboard() {
   const user = useSelector((state) => state.auth.user);
   const dispatch = useDispatch();
 
-    const {
-      data: bookingData,
-      error,
-      isLoading,
-    } = useFetchBookingDataQuery(user.id);
-  console.log(bookingData);
-  
-  const id = user.id;
+  const {
+    data: bookingData,
+    error,
+    isLoading,
+  } = useFetchBookingDataQuery(user.id);
 
   const handleLogout = () => {
     localStorage.clear();
@@ -37,6 +34,8 @@ function Dashboard() {
     return <div>Error: {error.message}</div>;
   }
 
+  const isAdmin = user.user_type === "admin";
+  const isOwner = user.user_type === "owner";
 
   return (
     <div className="container">
@@ -49,7 +48,11 @@ function Dashboard() {
         <div>
           <Link to={{ pathname: "send-invite" }}>Send Invite</Link>
           <Link to={{ pathname: "/booking", state: { user } }}>Booking</Link>
-          <Link to={{ pathname: "/calendar", state: { user } }}>Calendar</Link>
+          {isOwner && (
+            <Link to={{ pathname: "/addcampus", state: { user } }}>
+              Add Campus
+            </Link>
+          )}
         </div>
         <button onClick={handleLogout}>Logout</button>
       </div>

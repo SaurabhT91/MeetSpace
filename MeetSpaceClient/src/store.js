@@ -8,33 +8,37 @@ import { authApi } from "./services/authAPI";
 import { bookingInfoAPI } from "./services/bookingInfoAPI";
 import { campusAndRoomInfoAPI } from "./services/campus&roomInfoAPI";
 import { bookMeetSpaceAPI } from "./services/bookMeetSpaceAPI";
-import { inviteAPI } from "./services/inviteAPI"; // Import inviteAPI
-import { registrationSlice } from "./slices/registrationSlice"; // Import registrationSlice
-import { registrationApi } from "./services/registrationAPI"; // Import registrationApi
+import { inviteAPI } from "./services/inviteAPI";
+import { registrationSlice } from "./slices/registrationSlice";
+import { registrationApi } from "./services/registrationAPI";
+import { addCampusSlice } from "./slices/addCampusSlice";
+import { addCampusApi } from "./services/addCampusAPI";
+import { addRoomsAPI } from "./services/addRoomsAPI";
 
-// Add inviteAPI and registrationApi reducers to the whitelist
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: ["auth", "inviteAPI"],
+  whitelist: ["auth", "addCampus"],
 };
 
-const persistedReducer = persistReducer(
-  persistConfig,
-  combineReducers({
-    auth: authReducer,
-    [authApi.reducerPath]: authApi.reducer,
-    [bookingInfoAPI.reducerPath]: bookingInfoAPI.reducer,
-    [campusAndRoomInfoAPI.reducerPath]: campusAndRoomInfoAPI.reducer,
-    [bookMeetSpaceAPI.reducerPath]: bookMeetSpaceAPI.reducer,
-    [inviteAPI.reducerPath]: inviteAPI.reducer,
-    registration: registrationSlice.reducer,
-    [registrationApi.reducerPath]: registrationApi.reducer,
-  })
-);
+const rootReducer = combineReducers({
+  auth: authReducer,
+  [authApi.reducerPath]: authApi.reducer,
+  [bookingInfoAPI.reducerPath]: bookingInfoAPI.reducer,
+  [campusAndRoomInfoAPI.reducerPath]: campusAndRoomInfoAPI.reducer,
+  [bookMeetSpaceAPI.reducerPath]: bookMeetSpaceAPI.reducer,
+  [inviteAPI.reducerPath]: inviteAPI.reducer,
+  registration: registrationSlice.reducer,
+  [registrationApi.reducerPath]: registrationApi.reducer,
+  addCampus: addCampusSlice.reducer,
+  [addCampusApi.reducerPath]: addCampusApi.reducer,
+  [addRoomsAPI.reducerPath]: addRoomsAPI.reducer,
+});
 
+const persistedReducer = persistReducer(persistConfig, rootReducer);
+// Ensure that persistedReducer is being used
 export const store = configureStore({
-  reducer: persistedReducer,
+  reducer: persistedReducer, // persistedReducer instead of combineReducers
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat([
       authApi.middleware,
@@ -42,8 +46,11 @@ export const store = configureStore({
       campusAndRoomInfoAPI.middleware,
       bookMeetSpaceAPI.middleware,
       registrationApi.middleware,
+      addCampusApi.middleware,
+      addRoomsAPI.middleware,
     ]),
 });
+
 
 setupListeners(store.dispatch);
 

@@ -1,0 +1,108 @@
+/* addcampus.css */
+
+.container {
+  max-width: 1400px; /* Increase max-width to make the container larger */
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px; /* Add margin bottom */
+}
+
+.navigation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%; /* Ensure full width */
+  margin-bottom: 20px; /* Add margin bottom */
+  margin-right: 0px;
+}
+
+.navigation a {
+  margin-right: 20px;
+  text-decoration: none;
+  color: #007bff; /* Set link color */
+}
+
+.navigation button {
+  padding: 10px 20px;
+  margin-right: 0px;
+  background-color: #007bff; /* Set button color */
+  color: #fff; /* Set text color to white */
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  text-decoration: none; /* Remove text decoration */
+  font-weight: bold; /* Make text bold */
+}
+
+.navigation button:hover {
+  background-color: #0056b3;
+  text-decoration: none; /* Remove underline on hover */
+}
+
+.navigation button:focus {
+  outline: none; /* Remove focus outline */
+}
+
+.form-container {
+  width: 100%;
+  border: 1px solid #ccc; /* Add border */
+  padding: 20px; /* Add padding */
+  border-radius: 5px; /* Add border radius */
+  box-sizing: border-box; /* Ensure padding and border are included in width calculation */
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group {  /* Improved form group styling */
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 1rem;
+}
+
+.form-group label {
+  flex-basis: 100px;  /* Set fixed width for labels */
+  margin-right: 10px;
+}
+
+label {
+  font-weight: bold;
+}
+
+input[type="text"],
+input[type="number"] {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  width: 100%; /* Ensure full width */
+}
+
+.error {
+  color: red;
+  font-size: 0.8rem;
+}
+
+.button-container {
+  text-align: center;  /* Center the button horizontally */
+}
+
+.button-container button {
+  padding: 10px 20px;
+  background-color: #007bff; /* Set button color to blue */
+  color: #fff; /* Set text color to white */
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-right: 10px; /* Add some margin to the right */
+}
+
+.button-container button:hover {
+  background-color: #0056b3;
+}

@@ -1,131 +1,104 @@
 import React, { useState } from "react";
-import axios from "axios";
-import qs from "qs";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { useAddRoomMutation } from "../services/addRoomsAPI";
+import { setAddingRoom, setRoomErrors } from "../slices/addRoomsSlice";
+import { selectCampusInfo } from "../slices/addCampusSlice";
 
 function AddRooms() {
-  const campusInfo = useSelector((state) => state.campusInfo);
+  const user = useSelector((state) => state.auth.user);
+  const campusInfo = useSelector(selectCampusInfo); // Access persisted campus info
+  console.log(campusInfo);
   const navigate = useNavigate();
-  const user = useSelector((state) => state.user);
-  const [roomData, setRoomData] = useState(
-    Array.from({ length: campusInfo.rooms || 5 }, () => ({
-      roomName: "",
-      roomCapacity: "",
-      roomCharges: "",
-    }))
-  );
-  const [errors, setErrors] = useState({});
+  const [roomData, setRoomData] = useState([{}]);
   const dispatch = useDispatch();
-
-  const handleInputChange = (index, e) => {
-    const { name, value } = e.target;
-    const rooms = [...roomData];
-    rooms[index][name] = value;
-    setRoomData(rooms);
-  };
+  const [addRoom, { isLoading }] = useAddRoomMutation();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const noErrors = validateFields();
-    if (!noErrors) return;
-
     try {
-    const requestData = {
-      campusName: campusInfo.premiseName, // Include campus name from campusInfo
-      rooms: roomData, // Include room data
-    };
+      dispatch(setAddingRoom(true));
 
+      const response = await addRoom({
+        campusId: campusInfo.id,
+        campusName: campusInfo.premiseName,
+        rooms: roomData,
+      });
 
-      const response = await axios.post(
-        "http://localhost:8000/api/addRoom",
-        qs.stringify(requestData),
-        {
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-          },
-        }
-      );
-
-      if (response.status === 200) {
-        alert("Rooms Information added successfully")
-        navigate("/dashboard");
+      if (response.error) {
+        dispatch(setRoomErrors(response.error));
+        return;
       }
+
+      alert("Rooms Information added successfully");
+      navigate("/dashboard");
     } catch (error) {
-      if (error.response) {
-        const { status } = error.response;
-        if (status === 401) {
-          setErrors({ serverError: "Unauthorized: Please log in to proceed." });
-        } else if (status === 422) {
-          setErrors({
-            serverError: "Validation error: Please check your input fields.",
-          });
-        } else {
-          setErrors({ serverError: "Server error. Please try again later." });
-        }
-      } else {
-        setErrors({ serverError: "Server error. Please try again later." });
-      }
+      console.error("Add room error:", error);
+    } finally {
+      dispatch(setAddingRoom(false));
     }
   };
 
-  const validateFields = () => {
-    let noErrors = true;
-    const errors = {};
-
-    roomData.forEach((room, index) => {
-      if (!room.roomName || !room.roomCapacity || !room.roomCharges) {
-        errors[index] = "All fields are required";
-        noErrors = false;
-      }
-    });
-
-    setErrors(errors);
-    return noErrors;
+  const handleInputChange = (index, e) => {
+    const { name, value } = e.target;
+    const updatedRoomData = [...roomData];
+    updatedRoomData[index] = { ...updatedRoomData[index], [name]: value };
+    setRoomData(updatedRoomData);
   };
-
 
   return (
     <div>
       <h5>Add Room Information</h5>
-      <p>Campus Name: {campusInfo.premiseName}</p>
-      <p>
-        {user.name} you have to fill information of {campusInfo.rooms} meeting rooms of your campus { campusInfo.premiseName}
-      </p>
-      <form onSubmit={handleSubmit}>
-        {roomData.map((room, index) => (
-          <div key={index}>
-            <input
-              type="text"
-              name="roomName"
-              placeholder="Room Name"
-              value={room.roomName}
-              onChange={(e) => handleInputChange(index, e)}
-            />
-            <input
-              type="number"
-              name="roomCapacity"
-              placeholder="Room Capacity"
-              value={room.roomCapacity}
-              onChange={(e) => handleInputChange(index, e)}
-            />
-            <input
-              type="number"
-              name="roomCharges"
-              placeholder="Room Charges"
-              value={room.roomCharges}
-              onChange={(e) => handleInputChange(index, e)}
-            />
-            {errors[index] && (
-              <span style={{ color: "red" }}>{errors[index]}</span>
-            )}
-          </div>
-        ))}
-        {errors.serverError && (
-          <span style={{ color: "red" }}>{errors.serverError}</span>
+      <p>Welcome, {user && user.name}!</p>
+      {campusInfo &&
+        campusInfo.premiseName && ( // Check if campusInfo exists and has premiseName
+          <>
+            <p>
+              You are adding rooms for <strong>{campusInfo.premiseName}</strong>
+              .
+            </p>
+            <p>Please enter information for {campusInfo.rooms} rooms:</p>
+          </>
         )}
-        <button type="submit">Submit</button>
+      <form onSubmit={handleSubmit}>
+        {Array.from(
+          { length: campusInfo?.rooms || 0 },
+          (
+            _,
+            index // Check if campusInfo exists and has roomNumbers
+          ) => (
+            <div key={index} style={{ marginBottom: "10px" }}>
+              <h6>Room {index + 1}</h6>
+              <div style={{ display: "flex", marginBottom: "5px" }}>
+                <input
+                  type="text"
+                  name="roomName"
+                  placeholder="Room Name"
+                  value={roomData[index]?.roomName || ""}
+                  onChange={(e) => handleInputChange(index, e)}
+                />
+                <input
+                  type="number"
+                  name="roomCapacity"
+                  placeholder="Room Capacity"
+                  value={roomData[index]?.roomCapacity || ""}
+                  onChange={(e) => handleInputChange(index, e)}
+                />
+                <input
+                  type="number"
+                  name="roomCharges"
+                  placeholder="Room Charges"
+                  value={roomData[index]?.roomCharges || ""}
+                  onChange={(e) => handleInputChange(index, e)}
+                />
+              </div>
+            </div>
+          )
+        )}
+        <button type="submit" disabled={isLoading}>
+          {isLoading ? "Submitting..." : "Submit"}
+        </button>
       </form>
     </div>
   );
