@@ -29,15 +29,18 @@ function Login() {
       } else if (error.status === 401) {
         dispatch(setError("Invalid password."));
       } else if (error.status === 422) {
-        dispatch(setError(error.data.errors)); // Assuming error.data.errors contains validation errors
+        dispatch(setError(error.data.errors)); 
       } else {
-        setNetworkError(true);
+        if (error.name === "FetchError") {
+          setNetworkError(true);
+        }
         dispatch(
           setError("An unexpected error occurred. Please try again later.")
         );
       }
     }
   };
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
