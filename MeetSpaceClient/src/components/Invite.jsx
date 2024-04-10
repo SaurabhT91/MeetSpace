@@ -2,21 +2,20 @@ import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useInviteUserMutation } from "../services/inviteAPI";
 import { setError } from "../slices/inviteSlice";
-import "../styles/dashboard.css"; // Import the CSS file for styling
+import "../styles/dashboard.css";
 
 function SendInvite() {
   const [receivers_email, setEmail] = useState("");
   const [receivers_name, setName] = useState("");
   const dispatch = useDispatch();
   const { error: apiError } =
-    useSelector((state) => state.invitationSlice) || {}; // Handle undefined state
+    useSelector((state) => state.invitationSlice) || {};
   const [inviteUser, { isLoading }] = useInviteUserMutation();
-  const user = useSelector((state) => state.auth.user); // Replace with your logic for user info
+  const user = useSelector((state) => state.auth.user);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Check if email and name are empty
     if (!receivers_email.trim()) {
       dispatch(setError("Email is necessary."));
       return;
@@ -28,9 +27,9 @@ function SendInvite() {
     }
 
     try {
-      await inviteUser({ receivers_email, receivers_name, id: user.id, name: user.name }); // Include sender information
+      await inviteUser({ receivers_email, receivers_name, id: user.id, name: user.name, type: user.user_type}); 
       alert("Invitation sent successfully!");
-      // Optionally, reset the input fields after successful submission
+      
       setEmail("");
       setName("");
     } catch (error) {
@@ -40,10 +39,10 @@ function SendInvite() {
 
   useEffect(() => {
     if (apiError) {
-      alert(apiError); // Or display the error in a dedicated UI element
-      dispatch(setError(null)); // Clear the error after displaying it
+      alert(apiError); 
+      dispatch(setError(null));
     }
-  }, [apiError, dispatch]); // Run effect on error or dispatch change
+  }, [apiError, dispatch]); 
 
   return (
     <div className="send-invite-container">

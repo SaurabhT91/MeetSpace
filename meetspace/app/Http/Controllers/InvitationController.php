@@ -31,7 +31,7 @@ class InvitationController extends Controller
         ]);
 
         $invitingTo = "consumer";
-        if ($request->user_type == 'admin'){
+        if ($request->type == 'admin'){
             $invitingTo = 'owner';
         }
         
