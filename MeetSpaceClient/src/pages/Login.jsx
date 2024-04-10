@@ -56,6 +56,7 @@ function Login() {
             type="email"
             placeholder="Enter your email address"
             value={email}
+            autocomplete="username"
             onChange={(e) => setEmail(e.target.value)}
           />
         </div>
