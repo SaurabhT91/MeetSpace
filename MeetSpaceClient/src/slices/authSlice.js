@@ -21,10 +21,13 @@ export const authSlice = createSlice({
     setError: (state, action) => {
       state.error = action.payload;
     },
+    resetError: (state) => {
+      state.error = null;
+    },
   },
 });
 
-export const { setUser, logout, setError } = authSlice.actions;
+export const { setUser, logout, setError, resetError } = authSlice.actions;
 
 export const selectUser = (state) => state.auth.user;
 export const selectIsLoggedIn = (state) => state.auth.isLoggedIn;

@@ -14,34 +14,38 @@ function Login() {
   const error = useSelector(selectError);
   const [loginUserMutation] = useLoginUserMutation();
 
-const loginUser = async (credentials) => {
-  try {
-    const { data } = await loginUserMutation(credentials);
-    dispatch(setUser(data.user));
-    navigate("/dashboard");
-  } catch (error) {
-    console.error("Caught error:", error);
-    if (error.status === 404) {
-      dispatch(
-        setError(
-          "User not found. Check your email for a registration invite."
-        )
-      );
-    } else if (error.status === 401) {
-      dispatch(setError("Invalid password."));
-    } else if (error.status === 422) {
-      dispatch(setError(error.data.errors));
-    } else {
-      console.error("Unexpected error:", error);
-      if (error.name === "FetchError") {
-        setNetworkError(true);
+  const loginUser = async (credentials) => {
+
+      try {
+        const { data } = await loginUserMutation(credentials);
+        dispatch(setUser(data.user));
+        navigate("/dashboard");
+      } catch (error) {
+        console.error("Caught error:", error);
+        if (error.status === 404) {
+          dispatch(
+            setError(
+              "User not found. Check your email for a registration invite."
+            )
+          );
+        }
+        else if (error.status === 401) {
+          dispatch(setError("Invalid password."));
+        }
+        else if (error.status === 422) {
+          dispatch(setError(error.data.errors));
+        }
+        else {
+          console.error("Unexpected error:", error);
+          if (error.name === "FetchError") {
+            setNetworkError(true);
+          }
+          dispatch(
+            setError("An unexpected error occurred. Please try again later.")
+          );
+        }
       }
-      dispatch(
-        setError("An unexpected error occurred. Please try again later.")
-      );
-    }
-  }
-};
+    };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
