@@ -1,19 +1,27 @@
-import { configureStore } from "@reduxjs/toolkit";
+import { configureStore} from "@reduxjs/toolkit";
 import { setupListeners } from "@reduxjs/toolkit/query/react";
 import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
+import {
+  FLUSH,
+  REHYDRATE,
+  PAUSE,
+  PERSIST,
+  PURGE,
+  REGISTER,
+} from "redux-persist/es/constants";
 import { combineReducers } from "redux";
-import authReducer from "./slices/authSlice";
 import { authApi } from "./services/authAPI";
 import { bookingInfoAPI } from "./services/bookingInfoAPI";
 import { campusAndRoomInfoAPI } from "./services/campus&roomInfoAPI";
 import { bookMeetSpaceAPI } from "./services/bookMeetSpaceAPI";
 import { inviteAPI } from "./services/inviteAPI";
-import { registrationSlice } from "./slices/registrationSlice";
 import { registrationApi } from "./services/registrationAPI";
-import { addCampusSlice } from "./slices/addCampusSlice";
 import { addCampusApi } from "./services/addCampusAPI";
 import { addRoomsAPI } from "./services/addRoomsAPI";
+import authReducer from "./slices/authSlice";
+import { registrationSlice } from "./slices/registrationSlice";
+import { addCampusSlice } from "./slices/addCampusSlice";
 
 const persistConfig = {
   key: "root",
@@ -36,22 +44,27 @@ const rootReducer = combineReducers({
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
-// Ensure that persistedReducer is being used
-export const store = configureStore({
-  reducer: persistedReducer, // persistedReducer instead of combineReducers
+
+const store = configureStore({
+  reducer: persistedReducer,
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat([
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+      },
+    }).concat(
       authApi.middleware,
       bookingInfoAPI.middleware,
       campusAndRoomInfoAPI.middleware,
       bookMeetSpaceAPI.middleware,
       registrationApi.middleware,
       addCampusApi.middleware,
-      addRoomsAPI.middleware,
-    ]),
+      addRoomsAPI.middleware
+      // Add any other middleware here
+    ),
 });
-
 
 setupListeners(store.dispatch);
 
 export const persistor = persistStore(store);
+export default store;

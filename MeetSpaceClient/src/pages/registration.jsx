@@ -6,9 +6,8 @@ import {
   setError,
   selectRegistering,
   selectRegistrationError,
-} from "../slices/registrationSlice"; // Import setRegistering and setError
-
-import "../styles/registration.css";
+} from "../slices/registrationSlice";
+import "../styles/registration.css"; // Import the CSS file
 import { useParams } from "react-router-dom";
 
 function Registration() {
@@ -30,7 +29,7 @@ function Registration() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    dispatch(setRegistering(true)); // Corrected dispatch
+    dispatch(setRegistering(true));
 
     const userData = {
       name,
@@ -54,7 +53,6 @@ function Registration() {
       window.location.href = "/";
     } catch (error) {
       dispatch(setError("Registration failed. Please try again."));
-
       console.error("Registration error:", error);
     } finally {
       dispatch(setRegistering(false));
