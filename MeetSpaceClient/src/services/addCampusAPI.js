@@ -1,4 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { setError } from "../slices/addCampusSlice";
 
 export const addCampusApi = createApi({
   reducerPath: "addCampusApi",
@@ -10,9 +11,16 @@ export const addCampusApi = createApi({
         method: "POST",
         body: campusData,
       }),
-      onError: (error) => {
+      onError: ({ error, dispatch }) => {
+        // Log the error for debugging
         console.error("Add campus error:", error);
-        throw error;
+
+        // Dispatch action to set the error in the state
+        dispatch(
+          setError(
+            "An error occurred while adding campus. Please try again later."
+          )
+        );
       },
     }),
   }),

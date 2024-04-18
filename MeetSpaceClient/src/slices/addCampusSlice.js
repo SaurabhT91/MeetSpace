@@ -5,7 +5,7 @@ export const addCampusSlice = createSlice({
   initialState: {
     addingCampus: false,
     error: null,
-    campusInfo: null, // Add campusInfo to store campus information
+    campusInfo: null,
   },
   reducers: {
     setAddingCampus: (state, action) => {
@@ -15,8 +15,8 @@ export const addCampusSlice = createSlice({
       state.error = action.payload;
     },
     setCampusInfo: (state, action) => {
-      // Define setCampusInfo reducer
       state.campusInfo = action.payload;
+      state.error = null; // Reset error to null after success
     },
   },
 });
@@ -27,6 +27,6 @@ export const { setAddingCampus, setError, setCampusInfo } =
 // Selectors
 export const selectAddingCampus = (state) => state.addCampus.addingCampus;
 export const selectAddCampusError = (state) => state.addCampus.error;
-export const selectCampusInfo = (state) => state.addCampus.campusInfo; // Selector for campusInfo
+export const selectCampusInfo = (state) => state.addCampus.campusInfo;
 
-export default addCampusSlice.reducer;
+export default addCampusSlice; // Export the addCampusSlice

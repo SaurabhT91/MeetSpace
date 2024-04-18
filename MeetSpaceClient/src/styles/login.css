@@ -1,12 +1,63 @@
+:root {
+  --container-bg-light: #fff;
+  --text-color-light: #000;
+  --input-bg-light: #fff;
+  --input-text-color-light: #000;
+  --input-placeholder-color-light: #999;
+  --heading-color-light: #000;
+
+  --container-bg-dark: #333;
+  --text-color-dark: white;
+  --input-bg-dark: #444;
+  --input-text-color-dark: white;
+  --input-placeholder-color-dark: #999;
+  --heading-color-dark: white;
+}
+
+.light-mode .loginContainer {
+  background-color: var(--container-bg-light);
+}
+
+.light-mode .loginContainer input {
+  background-color: var(--input-bg-light);
+  color: var(--input-text-color-light);
+}
+
+.light-mode .loginContainer input::placeholder {
+  color: var(--input-placeholder-color-light);
+}
+
+.light-mode .loginContainer h2,
+.light-mode .loginContainer h3 {
+  color: var(--heading-color-light);
+}
+
+.dark-mode .loginContainer {
+  background-color: var(--container-bg-dark);
+}
+
+.dark-mode .loginContainer input {
+  background-color: var(--input-bg-dark);
+  color: var(--input-text-color-dark);
+}
+
+.dark-mode .loginContainer input::placeholder {
+  color: var(--input-placeholder-color-dark);
+}
+
+.dark-mode .loginContainer h2,
+.dark-mode .loginContainer h3 {
+  color: var(--heading-color-dark);
+}
+
+/* Remaining styles unchanged */
 .loginContainer {
   max-width: 400px;
   margin: 0 auto;
   padding: 20px;
   border: 1px solid #ccc;
   border-radius: 5px;
-  background-color: #333; /* Dark background color */
-  color: white; /* White text color */
-  box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.5); /* White border shadow */
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
 }
 
 .loginContainer h2 {
@@ -31,19 +82,6 @@
   border: 1px solid #ccc;
   border-radius: 5px;
   box-sizing: border-box;
-}
-
-/* Set text color to white for email and password inputs */
-.loginContainer input[type="email"],
-.loginContainer input[type="password"] {
-  color: #fff;
-  background-color: #444; /* Dark background color for inputs */
-}
-
-/* Set placeholder text color to light gray */
-.loginContainer input[type="email"]::placeholder,
-.loginContainer input[type="password"]::placeholder {
-  color: #999;
 }
 
 .loginContainer button {

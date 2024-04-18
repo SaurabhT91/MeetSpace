@@ -11,45 +11,52 @@ use Illuminate\Support\Facades\Log;
 
 class PremiseManagementController extends Controller
 {
-
     public function addCampus(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'premiseName' => ['required', 'string', 'min:3', 'max:50'],
-            'premiseAddress' => ['required', 'string', 'min:3', 'max:255'],
-            'rooms' => ['required', 'integer', 'min:1'],
-        ], [
-            'premiseName.required' => 'Name is required.',
-            'premiseName.string' => 'Name should be a string.',
-            'premiseName.min' => 'Name should contain minimum 3 characters.',
-            'premiseName.max' => 'Name should contain maximum 50 characters.',
+        try {
+            // Validate incoming request data
+            $validatedData = $request->validate([
+                'premiseName' => ['required', 'string', 'min:3', 'max:50'],
+                'premiseAddress' => ['required', 'string', 'min:3', 'max:255'],
+                'rooms' => ['required', 'integer', 'min:1', 'max:15'],
+            ], [
+                // Custom error messages
+                'premiseName.required' => 'Name is required.',
+                'premiseName.string' => 'Name should be a string.',
+                'premiseName.min' => 'Name should contain minimum 3 characters.',
+                'premiseName.max' => 'Name should contain maximum 50 characters.',
+                'premiseAddress.required' => 'Address is required.',
+                'premiseAddress.string' => 'Address should be a string.',
+                'premiseAddress.min' => 'Address should contain minimum 3 characters.',
+                'premiseAddress.max' => 'Address should contain maximum 255 characters.',
+                'rooms.required' => 'Rooms is required.',
+                'rooms.integer' => 'Rooms should be an integer.',
+                'rooms.min' => 'Rooms should be at least 1.',
+                'rooms.max' => 'Rooms should not exceed 15.',
+            ]);
 
-            'premiseAddress.required' => 'Address is required.',
-            'premiseAddress.string' => 'Address should be a string.',
-            'premiseAddress.min' => 'Address should contain minimum 3 characters.',
-            'premiseAddress.max' => 'Address should contain maximum 255 characters.',
+            // Create the campus
+            $campus = Campus::create([
+                'name' => $validatedData['premiseName'],
+                'address' => $validatedData['premiseAddress'],
+                'meeting_rooms' => $validatedData['rooms'],
+                'user_id' => $request->id,
+            ]);
 
-            'rooms.required' => 'Rooms is required.',
-            'rooms.integer' => 'Rooms should be an integer.',
-            'rooms.min' => 'Rooms should be at least 1.',
-        ]);
+            // Return success response
+            return response()->json(['message' => 'Campus added successfully', 'id' => $campus->id], 200);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            // Extract validation errors
+            $errors = $e->validator->errors()->toArray();
 
-        
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
+            // Return JSON response with validation errors
+            return response()->json(['error' => 'Campus registration failed', 'errors' => $errors], 400);
+        } catch (\Exception $e) {
+            // Handle unexpected exceptions
+            Log::error('Error adding campus: ' . $e->getMessage());
+            return response()->json(['error' => 'Error adding campus', 'reason' => $e->getMessage()], 500);
         }
-
-        $campus = Campus::create([
-            'name' => $request->premiseName,
-            'address' => $request->premiseAddress,
-            'meeting_rooms' => $request->rooms,
-            'user_id' => $request->id,
-        ]);
-
-        // Return success response
-        return response()->json(['message' => 'Campus added successfully', 'id' => $campus->id], 200);
     }
-
     public function removeCampus(Request $request){
 
     }

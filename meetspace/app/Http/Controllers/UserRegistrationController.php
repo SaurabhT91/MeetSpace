@@ -50,8 +50,9 @@ class UserRegistrationController extends Controller
             ]);
 
             return response()->json(['message' => 'User registered successfully'], 200);
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            // Get validation errors
+        } 
+        catch (\Illuminate\Validation\ValidationException $e) {
+            
             $errors = $e->validator->errors()->toArray();
 
             return response()->json(['error' => 'User registration failed', 'errors' => $errors], 400);

@@ -10,45 +10,67 @@ function AddCampus() {
   const user = useSelector((state) => state.auth.user);
   const id = user && user.id;
 
-  const navigate = useNavigate(); // Initialize navigate
+  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const [premiseName, setPremiseName] = useState("");
   const [premiseAddress, setPremiseAddress] = useState("");
   const [rooms, setRooms] = useState("");
-  const [errors, setErrors] = useState(null);
+  const [error, setError] = useState(null); // Change 'errors' to 'error'
 
   const [addCampus, { isLoading }] = useAddCampusMutation();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+      const handleSubmit = async (e) => {
+        e.preventDefault();
 
-    const data = {
-      premiseName,
-      premiseAddress,
-      rooms,
-      id,
-    };
+        const data = {
+          premiseName,
+          premiseAddress,
+          rooms,
+          id,
+        };
 
-    try {
-      dispatch(setAddingCampus(true));
+        try {
+          const response = await addCampus(data);
 
-      const response = await addCampus(data);
+          // Check if the response contains any errors
+          if (response.error) {
+            throw response.error;
+          }
 
-      if (response.error) {
-        throw response.error;
-      }
-      dispatch(setCampusInfo({ premiseName, premiseAddress, rooms }));
+          dispatch(setCampusInfo({ premiseName, premiseAddress, rooms, id }));
 
-      alert("Campus added successfully!");
-      navigate("/addRooms");
-    } catch (error) {
-      dispatch(setError("Failed to add campus. Please try again."));
-      console.error("Add campus error:", error);
-    } finally {
-      dispatch(setAddingCampus(false));
-    }
-  };
+          alert("Campus added successfully!");
+          navigate("/addRooms");
+        } catch (error) {
+          // Handle API request errors
+          console.error("Error adding campus:", error);
+
+          if (error && error.data && error.data.errors) {
+            const { errors } = error.data;
+
+            // Check if there are room-related errors
+            if (errors.rooms) {
+              // Display the first room error
+              dispatch(setError(errors.rooms[0]));
+            } else {
+              // Display the general error message
+              dispatch(setError(errors.error));
+            }
+          } else {
+            // Display a generic error message if the error structure is unexpected
+            dispatch(
+              setError(
+                "An error occurred while adding campus. Please try again later."
+              )
+            );
+          }
+        } finally {
+          dispatch(setAddingCampus(false));
+        }
+      };
+
+
 
   const handleLogout = () => {
     localStorage.clear();
@@ -76,9 +98,6 @@ function AddCampus() {
               style={{ width: "100%" }}
               required
             />
-            {errors && errors.premiseName && (
-              <span className="error">{errors.premiseName[0]}</span>
-            )}
           </div>
 
           <div className="form-group">
@@ -91,9 +110,6 @@ function AddCampus() {
               style={{ width: "100%" }}
               required
             />
-            {errors && errors.premiseAddress && (
-              <span className="error">{errors.premiseAddress[0]}</span>
-            )}
           </div>
 
           <div className="form-group">
@@ -106,15 +122,17 @@ function AddCampus() {
               style={{ width: "100%" }}
               required
             />
-            {errors && errors.rooms && (
-              <span className="error">{errors.rooms[0]}</span>
-            )}
           </div>
+          <span style={{ color: "lightcoral", fontSize: "0.8rem" }}>
+            Note: Currently, we don't host campuses with more than 15 rooms.
+          </span>
 
           <div className="button-container">
             <button type="submit">Add Campus</button>
           </div>
         </form>
+        {/* Display error message if exists */}
+        {error && <span className="error">{error}</span>}
       </div>
     </div>
   );
