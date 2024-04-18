@@ -1,4 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { setError } from "../slices/registrationSlice";
 
 export const registrationApi = createApi({
   reducerPath: "registrationApi",
@@ -10,8 +11,10 @@ export const registrationApi = createApi({
         method: "POST",
         body: userData,
       }),
-      onError: (error) => {
+      onError: ({ error, dispatch }) => {
         console.error("Registration error:", error);
+        const { error: errorMessage, errors } = error.data;
+        dispatch(setError({ message: errorMessage, errors }));
         throw error;
       },
     }),
@@ -19,5 +22,3 @@ export const registrationApi = createApi({
 });
 
 export const { useRegisterUserMutation } = registrationApi;
-
-

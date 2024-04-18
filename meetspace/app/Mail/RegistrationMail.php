@@ -33,7 +33,7 @@ class RegistrationMail extends Mailable
      */
     public function build()
     {
-        $baseUrl = "https://meetspace.saurabhtidgam.in/registration";
+        $baseUrl = "https://localhost:5173/registration";
         $token = $this->details['token'];
         $invitingTo = $this->details['invitingTo'];
         $subject = 'Welcome to Our Website';

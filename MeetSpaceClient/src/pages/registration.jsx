@@ -14,7 +14,7 @@ function Registration() {
   const dispatch = useDispatch();
   const [registerUser] = useRegisterUserMutation();
   const registering = useSelector(selectRegistering);
-  const errors = useSelector(selectRegistrationError);
+  const error = useSelector(selectRegistrationError);
 
   const { token } = useParams();
   const [tokenWithoutType, type] = token.split("&type=");
@@ -52,8 +52,12 @@ function Registration() {
       alert("Registration successful!");
       window.location.href = "/";
     } catch (error) {
-      dispatch(setError("Registration failed. Please try again."));
       console.error("Registration error:", error);
+      if (error && error.data && error.data.errors) {
+        dispatch(setError(error.data.errors));
+      } else {
+        dispatch(setError("Registration failed. Please try again."));
+      }
     } finally {
       dispatch(setRegistering(false));
     }
@@ -63,55 +67,82 @@ function Registration() {
     <div className="registration-container">
       <h2>Registration</h2>
       <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          placeholder="Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          required
-        />
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-        <input
-          type="tel"
-          placeholder="Contact Number"
-          value={contactNumber}
-          onChange={(e) => setContactNumber(e.target.value)}
-          required
-        />
-        <input
-          type="text"
-          placeholder="Address"
-          value={address}
-          onChange={(e) => setAddress(e.target.value)}
-          required
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-        <input
-          type="password"
-          placeholder="Confirm Password"
-          value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
-          required
-        />
+        <div className="input-container">
+          <input
+            type="text"
+            placeholder="Name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
+          />
+          {error && error.name && (
+            <div className="error">{error.name.join(", ")}</div>
+          )}
+        </div>
+        <div className="input-container">
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+          {error && error.email && (
+            <div className="error">{error.email.join(", ")}</div>
+          )}
+        </div>
+        <div className="input-container">
+          <input
+            type="tel"
+            placeholder="Contact Number"
+            value={contactNumber}
+            onChange={(e) => setContactNumber(e.target.value)}
+            required
+          />
+          {error && error.contactNumber && (
+            <div className="error">{error.contactNumber.join(", ")}</div>
+          )}
+        </div>
+        <div className="input-container">
+          <input
+            type="text"
+            placeholder="Address"
+            value={address}
+            onChange={(e) => setAddress(e.target.value)}
+            required
+          />
+          {error && error.address && (
+            <div className="error">{error.address.join(", ")}</div>
+          )}
+        </div>
+        <div className="input-container">
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+          {error && error.password && (
+            <div className="error">{error.password.join(", ")}</div>
+          )}
+        </div>
+        <div className="input-container">
+          <input
+            type="password"
+            placeholder="Confirm Password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            required
+          />
+          {error && error.password_confirmation && (
+            <div className="error">
+              {error.password_confirmation.join(", ")}
+            </div>
+          )}
+        </div>
         <button type="submit">Register</button>
       </form>
-      <div>
-        {errors && errors.serverError && (
-          <div className="error">{errors.serverError}</div>
-        )}
-      </div>
     </div>
   );
 }

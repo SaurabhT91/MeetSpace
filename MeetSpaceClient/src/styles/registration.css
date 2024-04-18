@@ -1,12 +1,32 @@
+/* Default values */
+:root {
+  --container-background-light: white; /* Light mode container background color */
+  --container-background-dark: #333; /* Dark mode container background color */
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+  .registration-container {
+    background-color: var(--container-background-dark); /* Set dark mode container background color */
+    color: white; /* Set dark mode text color */
+  }
+}
+
+/* Light mode */
+@media (prefers-color-scheme: light) {
+  .registration-container {
+    background-color: var(--container-background-light); /* Set light mode container background color */
+    color: black; /* Set light mode text color */
+  }
+}
+
 .registration-container {
   width: 100%;
   max-width: 800px;
   margin: 0 auto;
   padding: 20px;
   border-radius: 5px;
-  background-color: #333; /* Dark background color */
-  color: white; /* White text color */
-  box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.5); /* White border shadow */
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); /* Common border shadow */
 }
 
 .registration-container h2 {
@@ -26,8 +46,8 @@
   border: 1px solid #ccc;
   border-radius: 5px;
   box-sizing: border-box;
-  color: #333; /* Set text color to dark gray */
-  background-color: #444; /* Dark background color for inputs */
+  color: inherit; /* Inherit text color */
+  background-color: inherit; /* Inherit background color */
 }
 
 .registration-container input::placeholder {
@@ -37,7 +57,7 @@
 .registration-container button {
   padding: 10px 20px;
   background-color: #007bff;
-  color: #fff;
+  color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;

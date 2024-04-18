@@ -13,14 +13,16 @@ export const registrationSlice = createSlice({
     setError: (state, action) => {
       state.error = action.payload;
     },
+    clearError: (state) => {
+      state.error = null;
+    },
   },
 });
 
-export const { setRegistering, setError } = registrationSlice.actions;
+export const { setRegistering, setError, clearError } =
+  registrationSlice.actions;
 
-// Selectors
 export const selectRegistering = (state) => state.registration.registering;
 export const selectRegistrationError = (state) => state.registration.error;
 
 export default registrationSlice.reducer;
-
