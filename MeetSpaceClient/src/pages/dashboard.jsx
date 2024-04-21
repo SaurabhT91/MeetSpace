@@ -7,13 +7,15 @@ import { useSelector, useDispatch } from "react-redux";
 
 function Dashboard() {
   const user = useSelector((state) => state.auth.user);
+  const token = useSelector((state) => state.auth); // Access token from state
+  console.log(token); // Log the received token
   const dispatch = useDispatch();
 
   const {
     data: bookingData,
     error,
     isLoading,
-  } = useFetchBookingDataQuery(user.id);
+  } = useFetchBookingDataQuery(user.id); // Pass user id as parameter
 
   const handleLogout = () => {
     localStorage.clear();
@@ -73,16 +75,17 @@ function Dashboard() {
             </tr>
           </thead>
           <tbody>
-            {bookingData.flat().map((booking, index) => (
-              <tr key={index}>
-                <td>{booking.bookings.name}</td>
-                <td>{booking.bookings.address}</td>
-                <td>{booking.bookings.room}</td>
-                <td>{booking.bookings.date}</td>
-                <td>{booking.bookings.startTime}</td>
-                <td>{booking.bookings.endTime}</td>
-              </tr>
-            ))}
+            {bookingData && // Check if bookingData is not null or undefined
+              bookingData.flat().map((booking, index) => (
+                <tr key={index}>
+                  <td>{booking.bookings.name}</td>
+                  <td>{booking.bookings.address}</td>
+                  <td>{booking.bookings.room}</td>
+                  <td>{booking.bookings.date}</td>
+                  <td>{booking.bookings.startTime}</td>
+                  <td>{booking.bookings.endTime}</td>
+                </tr>
+              ))}
           </tbody>
         </table>
       </div>

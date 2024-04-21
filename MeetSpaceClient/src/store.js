@@ -1,7 +1,8 @@
-import { configureStore} from "@reduxjs/toolkit";
+import { configureStore } from "@reduxjs/toolkit";
 import { setupListeners } from "@reduxjs/toolkit/query/react";
 import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
+import { combineReducers } from "redux";
 import {
   FLUSH,
   REHYDRATE,
@@ -10,7 +11,6 @@ import {
   PURGE,
   REGISTER,
 } from "redux-persist/es/constants";
-import { combineReducers } from "redux";
 import { authApi } from "./services/authAPI";
 import { bookingInfoAPI } from "./services/bookingInfoAPI";
 import { campusAndRoomInfoAPI } from "./services/campus&roomInfoAPI";
@@ -22,6 +22,7 @@ import { addRoomsAPI } from "./services/addRoomsAPI";
 import authReducer from "./slices/authSlice";
 import { registrationSlice } from "./slices/registrationSlice";
 import { addCampusSlice } from "./slices/addCampusSlice";
+
 
 const persistConfig = {
   key: "root",
@@ -41,7 +42,9 @@ const rootReducer = combineReducers({
   addCampus: addCampusSlice.reducer,
   [addCampusApi.reducerPath]: addCampusApi.reducer,
   [addRoomsAPI.reducerPath]: addRoomsAPI.reducer,
+
 });
+
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
@@ -50,7 +53,7 @@ const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
-        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER], // Ignore certain actions for serialization
       },
     }).concat(
       authApi.middleware,
@@ -64,10 +67,9 @@ const store = configureStore({
     ),
 });
 
+// Setup listeners for Redux query
 setupListeners(store.dispatch);
 
+// Export the Redux store and persistor
 export const persistor = persistStore(store);
 export default store;
-
-
-

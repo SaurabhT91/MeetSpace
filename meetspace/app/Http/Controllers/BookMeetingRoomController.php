@@ -8,6 +8,7 @@ use App\Models\Room;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
 use App\Models\Booking;
+use Illuminate\Support\Facades\Auth;
 
 class BookMeetingRoomController extends Controller
 {
@@ -86,6 +87,8 @@ class BookMeetingRoomController extends Controller
     public function bookingSchedule($id)
     {
 
+        $user = Auth::user();
+        
         $ldate = date('Y-m-d');
         $bookingData = Booking::where('user_id', $id)->whereDate('date', '>=', $ldate)->get();
 

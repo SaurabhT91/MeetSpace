@@ -25,7 +25,8 @@ class RegisteredUserController extends Controller
 
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
-            return response()->json(['message' => 'Login successful', 'user' => $user], 200);
+            $token = $user->createToken('loginToken')->accessToken;
+            return response()->json(['success' => 'Login successful', 'user' => $user, 'accessToken' => $token], 200);
         }
 
         return response()->json(['error' => 'Invalid credentials'], 401);

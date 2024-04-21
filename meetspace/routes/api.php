@@ -19,24 +19,28 @@ use App\Http\Controllers\UserRegistrationController;
 |
 */
 
-Route::post('/login',[RegisteredUserController::class, 'login']);
+Route::post('/login',[RegisteredUserController::class, 'login'])->name('login');
 Route::post('/getUsers/{user_type}', [RegisteredUserController::class, 'users']);
 
-Route::post('/sendInvite', [InvitationController::class, 'sendInvite']);
-
-Route::post('/register', [UserRegistrationController::class, 'register']);
-
-Route::post('/addCampus', [PremiseManagementController::class, 'addCampus']);
-Route::post('/addRoom', [PremiseManagementController::class, 'addRoom']);
-Route::post('/removeCampus',[PremiseManagementController::class, 'removeCampus']);
-Route::post('/removeRoom', [PremiseManagementController::class, 'removeRoom']);
-
-Route::post('/MeetingRoomsInformation', [BookMeetingRoomController::class, 'meetingRoomInfo']);
-Route::post('/bookingRequest', [BookMeetingRoomController::class, 'bookingRequest']);
-Route::post('/bookingSchedule/{id}', [BookMeetingRoomController::class, 'bookingSchedule']);
 
 
 
+Route::group(['middleware' => ['auth:api']], function () {
+
+    Route::post('/register', [UserRegistrationController::class, 'register']);
+
+    Route::post('/addCampus', [PremiseManagementController::class, 'addCampus']);
+    Route::post('/addRoom', [PremiseManagementController::class, 'addRoom']);
+    Route::post('/removeCampus', [PremiseManagementController::class, 'removeCampus']);
+    Route::post('/removeRoom', [PremiseManagementController::class, 'removeRoom']);
+    
+    Route::post('/sendInvite', [InvitationController::class, 'sendInvite']);
+    
+     Route::post('/MeetingRoomsInformation', [BookMeetingRoomController::class, 'meetingRoomInfo']);
+    Route::post('/bookingRequest', [BookMeetingRoomController::class, 'bookingRequest']);
+    Route::post('/bookingSchedule/{id}', [BookMeetingRoomController::class, 'bookingSchedule']);
+
+});
 
 
 
