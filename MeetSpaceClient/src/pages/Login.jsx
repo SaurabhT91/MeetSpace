@@ -4,6 +4,7 @@ import { useLoginUserMutation } from "../services/authAPI";
 import { setError, selectError } from "../slices/authSlice";
 import { useNavigate } from "react-router-dom";
 import "../styles/login.css";
+import { setUser, setAccessToken } from "../slices/authSlice";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -13,14 +14,16 @@ function Login() {
   const navigate = useNavigate();
   const error = useSelector(selectError);
   const [loginUserMutation] = useLoginUserMutation();
+  const user = useSelector((state) => state.auth.user);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const { data } = await loginUserMutation({ email, password });
-      navigate("/dashboard");
-    } catch (error) {
-      console.error("Caught error:", error);
+
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  try {
+    const { data, error } = await loginUserMutation({ email, password });
+
+    if (error) {
+      console.error("API error:", error);
       if (error.status === 404) {
         dispatch(
           setError(
@@ -40,8 +43,23 @@ function Login() {
           setError("An unexpected error occurred. Please try again later.")
         );
       }
+      return;
     }
-  };
+    console.log("Login successful. Data:", data);
+    // const accessToken = data.accessToken;
+    // const user = data.user;
+    // dispatch(setUser(user));
+    // dispatch(setAccessToken({ accessToken }));
+     
+    if (user) {
+      navigate("/dashboard");
+    }
+  } catch (error) {
+    console.error("Caught error:", error);
+    dispatch(setError("An unexpected error occurred. Please try again later."));
+  }
+};
+
 
   return (
     <div className="loginContainer">

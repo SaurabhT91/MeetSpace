@@ -7,15 +7,13 @@ import { useSelector, useDispatch } from "react-redux";
 
 function Dashboard() {
   const user = useSelector((state) => state.auth.user);
-  const token = useSelector((state) => state.auth); // Access token from state
-  console.log(token); // Log the received token
   const dispatch = useDispatch();
 
   const {
     data: bookingData,
     error,
     isLoading,
-  } = useFetchBookingDataQuery(user.id); // Pass user id as parameter
+  } = useFetchBookingDataQuery(user.id);
 
   const handleLogout = () => {
     localStorage.clear();
