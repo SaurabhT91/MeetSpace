@@ -28,49 +28,54 @@ function Login() {
     };
   }, [dispatch]);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!email.trim() && !password.trim()) {
-      dispatch(setError("Please enter both email and password."));
-    } else if (!email.trim()) {
-      dispatch(setError("Please enter a valid email address."));
-    } else if (!password.trim()) {
-      dispatch(setError("Please enter your password."));
-    } else {
-      try {
-        const { data, error } = await loginUserMutation({ email, password });
-        if (error) {
-          if (error.status === 404) {
-            dispatch(
-              setError(
-                "User not found. Check your email for a registration invite."
-              )
-            );
-          } else if (error.status === 401) {
-            dispatch(setError("Invalid password."));
-          } else if (error.status === 422) {
-            dispatch(
-              setError("Validation error occurred. Please check your input.")
-            );
-          } else {
-            if (error.name === "FetchError") {
-              setNetworkError(true);
-            }
-            dispatch(
-              setError("An unexpected error occurred. Please try again later.")
-            );
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  if (!email.trim() && !password.trim()) {
+    dispatch(setError("Please enter both email and password."));
+  } else if (!email.trim()) {
+    dispatch(setError("Please enter a valid email address."));
+  } else if (!password.trim()) {
+    dispatch(setError("Please enter your password."));
+  } else {
+    try {
+      const { data, error } = await loginUserMutation({ email, password });
+
+      if (error) {
+        if (error.status === 404) {
+          dispatch(
+            setError(
+              "User not found. Check your email for a registration invite."
+            )
+          );
+        } else if (error.status === 401) {
+          dispatch(setError("Invalid password."));
+        } else if (error.status === 422) {
+          dispatch(
+            setError("Validation error occurred. Please check your input.")
+          );
+        } else {
+          if (error.name === "FetchError") {
+            setNetworkError(true);
           }
-          return;
+          dispatch(
+            setError("An unexpected error occurred. Please try again later.")
+          );
         }
-        navigate("/dashboard");
-      } catch (error) {
-        
-        dispatch(
-          setError("An unexpected error occurred. Please try again later.")
-        );
+        return;
       }
+
+    dispatch(setError(null));
+
+      navigate("/dashboard");
+    } catch (error) {
+      console.error("Caught error:", error);
+      dispatch(
+        setError("An unexpected error occurred. Please try again later.")
+      );
     }
-  };
+  }
+};
+
 
   return (
     <div className="loginContainer">
