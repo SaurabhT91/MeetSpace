@@ -17,8 +17,12 @@ export const authApi = createApi({
           dispatch(setAccessToken(data.accessToken));
           dispatch(setUser(data.user));
         } catch (error) {
-          dispatch(setError(error));
-          throw error;
+          const errorData = {
+            message: error.message,
+            status: error.status,
+          };
+
+          return errorData;
         }
       },
     }),

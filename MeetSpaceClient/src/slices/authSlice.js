@@ -29,7 +29,6 @@ export const authSlice = createSlice({
       state.error = null;
     },
     setError: (state, action) => {
-      console.log("setError payload:", action.payload);
       state.error = action.payload;
     },
   },

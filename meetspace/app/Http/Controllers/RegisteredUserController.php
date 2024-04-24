@@ -27,10 +27,16 @@ class RegisteredUserController extends Controller
             $user = Auth::user();
             $token = $user->createToken('loginToken')->accessToken;
             return response()->json(['success' => 'Login successful', 'user' => $user, 'accessToken' => $token], 200);
+        } else {
+            $user = User::where('email', $request->email)->first();
+            if (!$user) {
+                return response()->json(['error' => 'User not found. Check your email for a registration invite.'], 404);
+            } else {
+                return response()->json(['error' => 'Invalid password.'], 401);
+            }
         }
-
-        return response()->json(['error' => 'Invalid credentials'], 401);
     }
+
 
     public function users(Request $request, $user_type){
         
