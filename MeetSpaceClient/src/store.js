@@ -53,7 +53,7 @@ const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
-        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER], // Ignore certain actions for serialization
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER], 
       },
     }).concat(
       authApi.middleware,
@@ -63,13 +63,12 @@ const store = configureStore({
       registrationApi.middleware,
       addCampusApi.middleware,
       addRoomsAPI.middleware
-      // Add any other middleware here
+
     ),
 });
 
-// Setup listeners for Redux query
 setupListeners(store.dispatch);
 
-// Export the Redux store and persistor
+
 export const persistor = persistStore(store);
 export default store;

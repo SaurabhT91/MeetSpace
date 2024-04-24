@@ -15,6 +15,7 @@ function Login() {
   const error = useSelector(selectError);
   const [loginUserMutation] = useLoginUserMutation();
   const user = useSelector((state) => state.auth.user);
+  
 
 
 const handleSubmit = async (e) => {
@@ -46,11 +47,6 @@ const handleSubmit = async (e) => {
       return;
     }
     console.log("Login successful. Data:", data);
-    // const accessToken = data.accessToken;
-    // const user = data.user;
-    // dispatch(setUser(user));
-    // dispatch(setAccessToken({ accessToken }));
-     
     if (user) {
       navigate("/dashboard");
     }
