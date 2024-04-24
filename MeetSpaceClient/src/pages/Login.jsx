@@ -24,7 +24,7 @@ const handleSubmit = async (e) => {
     const { data, error } = await loginUserMutation({ email, password });
 
     if (error) {
-      console.error("API error:", error);
+     
       if (error.status === 404) {
         dispatch(
           setError(
@@ -36,7 +36,7 @@ const handleSubmit = async (e) => {
       } else if (error.status === 422) {
         dispatch(setError(error.data.errors));
       } else {
-        console.error("Unexpected error:", error);
+
         if (error.name === "FetchError") {
           setNetworkError(true);
         }
@@ -46,12 +46,10 @@ const handleSubmit = async (e) => {
       }
       return;
     }
-    console.log("Login successful. Data:", data);
     if (user) {
       navigate("/dashboard");
     }
   } catch (error) {
-    console.error("Caught error:", error);
     dispatch(setError("An unexpected error occurred. Please try again later."));
   }
 };

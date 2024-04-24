@@ -7,7 +7,7 @@ export const bookingInfoAPI = createApi({
     prepareHeaders: (headers, { getState }) => {
       const token = getState().auth.accessToken;
       if (token) {
-        console.log(`Access token: ${token}`);
+
         headers.set("Authorization", `Bearer ${token}`);
       }
       return headers;

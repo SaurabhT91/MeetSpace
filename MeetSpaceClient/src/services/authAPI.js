@@ -17,7 +17,6 @@ export const authApi = createApi({
           dispatch(setAccessToken(data.accessToken));
           dispatch(setUser(data.user));
         } catch (error) {
-          console.error("Login error:", error);
           dispatch(setError(error));
           throw error;
         }

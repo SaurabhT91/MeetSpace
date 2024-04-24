@@ -7,7 +7,6 @@ import { useSelector, useDispatch } from "react-redux";
 
 function Dashboard() {
   const state = useSelector((state) => state);
-  console.log(state);
   const user = useSelector((state) => state.auth.user);
   const dispatch = useDispatch();
 
