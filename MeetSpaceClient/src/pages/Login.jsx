@@ -4,8 +4,6 @@ import { useLoginUserMutation } from "../services/authAPI";
 import {
   setError,
   selectError,
-  setAccessToken,
-  setUser,
 } from "../slices/authSlice";
 import { useNavigate } from "react-router-dom";
 import "../styles/login.css";
