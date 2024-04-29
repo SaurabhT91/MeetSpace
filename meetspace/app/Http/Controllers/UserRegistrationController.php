@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -17,7 +16,7 @@ class UserRegistrationController extends Controller
         try {
             $validatedData = $request->validate([
                 'name' => ['required', 'string', 'max:50', 'min:3'],
-                'email' => ['required', 'string', 'email:rfc,dns', 'max:255', 'unique:' . User::class],
+                'email' => ['required', 'string', 'email:rfc,dns', 'max:255', Rule::unique(User::class)],
                 'contactNumber' => ['required', 'regex:/^([0-9\s\-\+\(\)]*)$/', 'min:10'],
                 'address' => ['required', 'string', 'max:255', 'min:3'],
                 'type' => ['required', 'string'],
@@ -40,6 +39,7 @@ class UserRegistrationController extends Controller
                 'type.in' => 'Type input was not valid',
             ]);
 
+            // Creating user
             $user = User::create([
                 'name' => $validatedData['name'],
                 'email' => $validatedData['email'],
@@ -49,17 +49,20 @@ class UserRegistrationController extends Controller
                 'password' => Hash::make($validatedData['password']),
             ]);
 
-            return response()->json(['message' => 'User registered successfully'], 200);
-        } 
-        catch (\Illuminate\Validation\ValidationException $e) {
             
-            $errors = $e->validator->errors()->toArray();
+            $response = response()->json(['message' => 'User registered successfully'], 200);
 
+
+            return $response;
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            // Handling validation errors
+            $errors = $e->validator->errors()->toArray();
             return response()->json(['error' => 'User registration failed', 'errors' => $errors], 400);
         } catch (\Exception $e) {
+            // Logging and returning error response
             Log::error('User registration failed: ' . $e->getMessage());
-
             return response()->json(['error' => 'User registration failed', 'reason' => $e->getMessage()], 400);
         }
     }
 }
+
