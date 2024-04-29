@@ -2,7 +2,16 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const inviteAPI = createApi({
   reducerPath: "inviteAPI",
-  baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:8000/api/" }),
+  baseQuery: fetchBaseQuery({
+    baseUrl: "http://localhost:8000/api/",
+    prepareHeaders: (headers, { getState }) => {
+      const token = getState().auth.accessToken;
+      if (token) {
+        headers.set("Authorization", `Bearer ${token}`);
+      }
+      return headers;
+    },
+  }),
   endpoints: (builder) => ({
     inviteUser: builder.mutation({
       query: (credentials) => ({
@@ -11,11 +20,11 @@ export const inviteAPI = createApi({
         body: credentials,
       }),
       onError: (error) => {
-        console.error("Login error:", error);
+        console.error("Invitation error:", error);
         throw error;
       },
       onSuccess: () => {
-        return "Invitetion sent successfully";
+        return "Invitation sent successfully";
       },
     }),
   }),

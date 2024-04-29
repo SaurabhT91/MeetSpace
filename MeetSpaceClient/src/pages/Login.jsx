@@ -108,7 +108,7 @@ const handleSubmit = async (e) => {
               Network error. Please try again later.
             </span>
           )}
-          {error && <span className="error">{error}</span>}
+          {error && <span className="error">{error.message}</span>}
         </div>
         <button type="submit" id="login-btn">
           Login
