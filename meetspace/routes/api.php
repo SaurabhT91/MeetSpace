@@ -22,12 +22,12 @@ use App\Http\Controllers\UserRegistrationController;
 Route::post('/login',[RegisteredUserController::class, 'login'])->name('login');
 Route::post('/getUsers/{user_type}', [RegisteredUserController::class, 'users']);
 
-
+Route::post('/register', [UserRegistrationController::class, 'register']);
 
 
 Route::group(['middleware' => ['auth:api']], function () {
 
-    Route::post('/register', [UserRegistrationController::class, 'register']);
+  
 
     Route::post('/addCampus', [PremiseManagementController::class, 'addCampus']);
     Route::post('/addRoom', [PremiseManagementController::class, 'addRoom']);
