@@ -27,8 +27,6 @@ Route::post('/register', [UserRegistrationController::class, 'register']);
 
 Route::group(['middleware' => ['auth:api']], function () {
 
-  
-
     Route::post('/addCampus', [PremiseManagementController::class, 'addCampus']);
     Route::post('/addRoom', [PremiseManagementController::class, 'addRoom']);
     Route::post('/removeCampus', [PremiseManagementController::class, 'removeCampus']);

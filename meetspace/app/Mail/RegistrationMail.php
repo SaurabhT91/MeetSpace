@@ -36,7 +36,7 @@ class RegistrationMail extends Mailable
         $baseUrl = "https://meetspace.saurabhtidgam.in/registration";
         $token = $this->details['token'];
         $invitingTo = $this->details['invitingTo'];
-        $subject = 'Welcome to Our Website';
+        $subject = 'Welcome to Our Website MeetSpace';
         $content = '<h1>Welcome, ' . $this->details['name'] . '!</h1>';
         $content .= '<p>' . $this->details['content'] . '</p>';
         $content .= rtrim($baseUrl, '/') .'/'. $token . '&type=' . $invitingTo;

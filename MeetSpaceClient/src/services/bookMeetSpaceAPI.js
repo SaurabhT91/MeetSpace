@@ -2,7 +2,16 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const bookMeetSpaceAPI = createApi({
   reducerPath: "MeetSpaceAPI",
-  baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:8000/api/" }),
+  baseQuery: fetchBaseQuery({
+    baseUrl: "http://localhost:8000/api/",
+    prepareHeaders: (headers, { getState }) => {
+      const token = getState().auth.accessToken;
+      if (token) {
+        headers.set("Authorization", `Bearer ${token}`);
+      }
+      return headers;
+    }
+  }),
   endpoints: (builder) => ({
     bookingRequest: builder.mutation({
       query: (BookingRequestData) => ({

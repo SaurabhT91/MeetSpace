@@ -2,13 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\NotificationMailOwner;
 use Illuminate\Http\Request;
+
+use App\Models\User;
 use App\Models\Campus;
 use App\Models\Room;
+use App\Models\Booking;
+
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
-use App\Models\Booking;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\NotificationMailConsumer;
 
 class BookMeetingRoomController extends Controller
 {
@@ -27,8 +33,6 @@ class BookMeetingRoomController extends Controller
 
     public function bookingRequest(Request $request)
     {
-
-        // Log::info($request);
 
         $validator = Validator::make(
             $request->all(),
@@ -80,6 +84,9 @@ class BookMeetingRoomController extends Controller
 
 
         $data = Booking::where('user_id', $request->user['id'])->first();
+        $user_id = $request->user['id'];
+
+        $this->BookingNotification($user_id, $data->toArray());
 
         return response()->json(['message' => 'Booking created Successfully', 'Booking_data' => $data], 200);
     }
@@ -105,12 +112,65 @@ class BookMeetingRoomController extends Controller
             $endTime = $data->end_time;
             $date = $data->date;
 
-            array_push($showData, ['bookings' => ['address'=>$campusaddress[0]['address'], 'name'=>$campusname[0]['name'], 'room' => $roomName[0]['room_name'], 'startTime' => $startTime, 'endTime' => $endTime, 'date' => $date]]);
+            array_push($showData, [
+             'bookings' => [
+                'address'=>$campusaddress[0]['address'],
+                'name'=>$campusname[0]['name'],
+                'room' => $roomName[0]['room_name'],
+                'startTime' => $startTime,
+                'endTime' => $endTime,
+                'date' => $date]]);
 
         }
 
 
 
         return response()->json([$showData]);
+    }
+
+    public function BookingNotification($userID, array $bookingData){
+
+        Log::info($bookingData);
+
+        $consumerData = User::where('id', $userID)->first();
+        $consumerEmail = $consumerData['email'];
+        $campusID = Room::where('id', $bookingData['room_id'])->value('campuses_id'); 
+        $campusInfo = Campus::where('id', $campusID)->first();
+        $ownerData = User::where('id', $campusInfo['user_id'])->first();
+
+        $BookingData  = [
+            'bookingID' => $ownerData['id'],
+            'userID' => $bookingData['user_id'],
+            'userName' => $consumerData['name'], 
+            'campusName' => $campusInfo['name'],
+            'campusOwner' => $ownerData['name'],
+            'campusAddress' => $campusInfo['address'],
+            'RoomName' => Room::where('id', $bookingData['room_id'])->value('room_name'),
+            'Date' => $bookingData['date'],
+            'startTime' => $bookingData['start_time'],
+            'endTime' => $bookingData['end_time'],
+        ];
+
+        Log::info($BookingData);
+
+        try {
+            Mail::to($consumerEmail)->send(new NotificationMailConsumer($BookingData));
+        } catch (\Exception $e) {
+            Log::error('Failed to send email: ' . $e->getMessage());
+
+            return response()->json(['message' => 'Failed to send email'], 500);
+        }
+
+        try {
+            Mail::to($ownerData['email'])->send(new NotificationMailOwner($BookingData));
+        } catch (\Exception $e) {
+            Log::error('Failed to send email: ' . $e->getMessage());
+
+            return response()->json(['message' => 'Failed to send email'], 500);
+        }
+
+
+        return response()->json(['message' => 'Email sent successfully'], 200);
+
     }
 }

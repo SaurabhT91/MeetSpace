@@ -45,8 +45,6 @@ class InvitationController extends Controller
             'invitingTo' => $invitingTo,
         ];
 
-        var_dump($details);
-
         try {
             Mail::to($request->receivers_email)->send(new RegistrationMail($details));
         } catch (\Exception $e) {           
