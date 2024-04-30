@@ -46,6 +46,7 @@ class InvitationController extends Controller
         ];
 
         try {
+            
             Mail::to($request->receivers_email)->send(new RegistrationMail($details));
         } catch (\Exception $e) {           
             Log::error('Failed to send email: ' . $e->getMessage());
