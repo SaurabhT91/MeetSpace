@@ -13,10 +13,13 @@ return new class extends Migration
     {
         Schema::create('rooms', function (Blueprint $table) {
             $table->id();
-            $table->foreignID('campuses_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('campus_id')->constrained()->cascadeOnDelete();
             $table->string('room_name');
             $table->string('room_charges');
             $table->string('room_capacity');
+            $table->boolean('available')->default(true);
+            $table->time('open_time')->default('09:00:00');
+            $table->time('close_time')->default('20:00:00');
             $table->timestamps();
         });
     }
@@ -29,3 +32,4 @@ return new class extends Migration
         Schema::dropIfExists('rooms');
     }
 };
+

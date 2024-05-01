@@ -14,9 +14,12 @@ return new class extends Migration
         Schema::create('campuses', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->foreignID('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('address');
             $table->integer('meeting_rooms');
+            $table->boolean('available')->default(true);
+            $table->time('open_time')->default('09:00:00');
+            $table->time('close_time')->default('20:00:00');
             $table->timestamps();
         });
     }
@@ -26,8 +29,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('campus_information');
+        Schema::dropIfExists('campuses');
     }
-
-
 };
+

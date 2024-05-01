@@ -11,14 +11,15 @@ class Room extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['room_name', 'room_capacity' , 'room_charges', 'campuses_id'];
+    protected $fillable = ['room_name', 'room_capacity', 'room_charges', 'campus_id', 'available', 'open_time', 'close_time'];
 
-    public function room()
+    public function campus()
     {
         return $this->belongsTo(Campus::class, 'campus_id');
     }
-    public function booking()
+
+    public function bookings()
     {
-        return $this->hasMany(Booking::class, 'booking_id');
+        return $this->hasMany(Booking::class);
     }
 }
