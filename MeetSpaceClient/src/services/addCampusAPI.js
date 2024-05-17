@@ -3,7 +3,16 @@ import { setError } from "../slices/addCampusSlice";
 
 export const addCampusApi = createApi({
   reducerPath: "addCampusApi",
-  baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:8000/api/" }),
+  baseQuery: fetchBaseQuery({
+    baseUrl: "http://localhost:8000/api/",
+    prepareHeaders: (headers, { getState }) => {
+      const token = getState().auth.accessToken;
+      if (token) {
+        headers.set("Authorization", `Bearer ${token}`);
+      }
+      return headers;
+    },
+  }),
   endpoints: (builder) => ({
     addCampus: builder.mutation({
       query: (campusData) => ({

@@ -20,6 +20,7 @@ import Calendar from "./pages/calendar.jsx";
 import AddRooms from "./pages/addRoomsInformation.jsx";
 import SendInvite from "./components/Invite.jsx";
 import RoomData from "./components/roomData.jsx";
+import ManageCampusAndRooms from "./pages/manageCampusAndRooms.jsx";
 
 const router = createBrowserRouter([
   {
@@ -74,6 +75,11 @@ const router = createBrowserRouter([
   {
     path: "/addRooms",
     element: <AddRooms />,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "/manageCampusAndRooms",
+    element: <ManageCampusAndRooms />,
     errorElement: <ErrorPage />,
   },
 ]);

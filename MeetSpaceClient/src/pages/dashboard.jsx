@@ -54,6 +54,11 @@ function Dashboard() {
               Add Campus
             </Link>
           )}
+          {isOwner && (
+            <Link to={{ pathname: "/manageCampusAndRooms", state: { user } }}>
+              Manage Campus
+            </Link>
+          )}
         </div>
         <button onClick={handleLogout}>Logout</button>
       </div>

@@ -34,10 +34,12 @@ Route::group(['middleware' => ['auth:api']], function () {
     
     Route::post('/sendInvite', [InvitationController::class, 'sendInvite']);
     
-     Route::post('/MeetingRoomsInformation', [BookMeetingRoomController::class, 'meetingRoomInfo']);
+    Route::post('/MeetingRoomsInformation', [BookMeetingRoomController::class, 'meetingRoomInfo']);
     Route::post('/bookingRequest', [BookMeetingRoomController::class, 'bookingRequest']);
     Route::post('/bookingSchedule/{id}', [BookMeetingRoomController::class, 'bookingSchedule']);
 
+    //  to manage campus and rooms
+    Route::post('/ownersCampusAndRooms',[PremiseManagementController::class, 'ownersCampusAndRooms']);
 });
 
 

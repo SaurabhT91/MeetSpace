@@ -57,9 +57,13 @@ class PremiseManagementController extends Controller
             return response()->json(['error' => 'Error adding campus', 'reason' => $e->getMessage()], 500);
         }
     }
+
+
     public function removeCampus(Request $request){
 
     }
+
+
     public function addRoom(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -114,6 +118,37 @@ class PremiseManagementController extends Controller
 
 
     public function removeRoom(Request $request){
+
+    }
+
+    public function ownersCampusAndRooms(Request $request)
+    {
+        
+        $campuses = Campus::where('user_id', $request->ownerId)->get();
+
+        Log::info($campuses);
+
+
+        $campusesWithRooms = [];
+
+        foreach ($campuses as $campus) {
+            $rooms = Room::where('campus_id', $campus->id)->get();
+
+            $campusesWithRooms[] = [
+                'campus' => $campus,
+                'rooms' => $rooms
+            ];
+        }
+
+        return response()->json(['CampusesWithRooms' => $campusesWithRooms], 200);
+    }
+
+
+    public function availabilityAndTimeManager(Request $request){
+
+        Log::info($request);
+
+        return response()->json(['message' => 'request receievd',200]);
 
     }
 }
