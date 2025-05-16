@@ -1,9 +1,10 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { setError } from "../slices/registrationSlice";
+const API_BASE = import.meta.env.VITE_API_URL;
 
 export const registrationApi = createApi({
   reducerPath: "registrationApi",
-  baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:8000/api/" }),
+  baseQuery: fetchBaseQuery({ baseUrl: API_BASE }),
   endpoints: (builder) => ({
     registerUser: builder.mutation({
       query: (userData) => ({
